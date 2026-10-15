@@ -23,6 +23,10 @@
     font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
 }
 
+li {
+    font-family: 'Brush Script MT', cursive;
+}
+
 body {
     background: #ECE7F6;
 }
@@ -446,8 +450,8 @@ body {
 }
 
 .hero_image_index {
-    flex: 1 1 420px;
-    max-width: 520px;
+    flex: 1 1 720px;
+    max-width: 920px;
 }
 
 .hero_banner_img_index {

@@ -31,6 +31,7 @@ if ($nomeArquivo === false) {
         <label>Nome: </label><br>
         <input type="text" name="prod_nome" required>
     </p>
+     
     <p>
         <label>Marca: </label><br>
         <input type="text" name="prod_marca" required> 
