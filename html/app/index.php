@@ -7,7 +7,7 @@ define('RAIZ', dirname(__DIR__));
 $pagina = $_GET['pagina'] ?? 'produtos';
 
 // Lista de páginas permitidas
-$paginasPermitidas = ['servicos', 'agenda', 'avalie', 'perfil', 'profissionais', 'clientes'];
+$paginasPermitidas = ['servicos', 'agenda', 'avalie', 'perfil', 'profissionais', 'clientes', 'editar_perfil'];
 
 if (!in_array($pagina, $paginasPermitidas)) {
     $pagina = 'servicos'; // se a página não existir na lista, cai no padrão

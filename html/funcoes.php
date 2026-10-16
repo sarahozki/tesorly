@@ -86,9 +86,6 @@ if (!in_array(strtolower($extensao), $tipos_permitidos)) {
     return false;}
 }
 
-
-
-
 function editaruser($conexao, $nome, $email, $senha, $telefone, $fotos, $idusuarios){
     $sql = "UPDATE usuarios SET nome=?, email=?, senha=?, telefone=?, fotos=? WHERE idusuarios=?";
     $comando = mysqli_prepare($conexao, $sql);
