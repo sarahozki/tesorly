@@ -1,44 +1,22 @@
 <?php
+require_once RAIZ . '/funcoes.php';
 
-    require_once ("../conexao.php");
-
-    $sql = "SELECT user_nome, user_email, user_telefone, user_fotos FROM usuarios";
-    $stmt = $conexao->prepare($sql);
-    $stmt->execute();
-
-    $resultados = $stmt->get_result();
-
+$profissionais = agendaListarProfissionais($conexao);
 ?>
+<h2 class="titulo_pagina_agenda">Profissionais</h2>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes</title>
-</head>
-<body>
-    <h1>Lista de Clientes (teste)</h1>
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Telefone</th>
-                <th>Fotos</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($row = $resultados->fetch_assoc()): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($row['user_nome']); ?></td>
-                    <td><?php echo htmlspecialchars($row['user_email']); ?></td>
-                    <td><?php echo htmlspecialchars($row['user_telefone']); ?></td>
-                    <td><?php echo htmlspecialchars($row['user_fotos']); ?></td>
-                </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
-</body>
-</html>
+<?php if (!$profissionais): ?>
+    <p class="aviso_agenda">Nenhum profissional cadastrado ainda.</p>
+<?php else: ?>
+    <div class="grid_prof_agenda">
+        <?php foreach ($profissionais as $p): ?>
+            <?php $foto = !empty($p['user_fotos']) ? '../uploads/usuarios/' . $p['user_fotos'] : '../imagens/fotouser.png'; ?>
+            <article class="card_agenda card_prof_agenda">
+                <img class="foto_prof_agenda" src="<?= htmlspecialchars($foto) ?>" alt="Foto de <?= htmlspecialchars($p['user_nome']) ?>">
+                <h3><?= htmlspecialchars($p['user_nome']) ?></h3>
+                <p class="sub_agenda"><?= htmlspecialchars($p['empre_tipo']) ?> · <?= htmlspecialchars($p['empre_cidade']) ?></p>
+                <a class="botao_agenda" href="?pagina=profissional&amp;id=<?= (int)$p['idempresario'] ?>">Ver agenda</a>
+            </article>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>

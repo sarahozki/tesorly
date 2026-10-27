@@ -1,0 +1,271 @@
+/* ===== Agenda / agendamento (profissionais, perfil do profissional, lista) ===== */
+
+.titulo_pagina_agenda { color: #2E2340; margin-bottom: 16px; }
+.subtitulo_agenda { color: #6B2F5C; margin: 24px 0 10px; }
+.aviso_agenda { color: #6b6280; font-size: 0.9rem; }
+.aviso_agenda a { color: #D6336C; }
+.sub_agenda { color: #777; font-size: 0.82rem; }
+
+.card_agenda {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(74, 45, 92, 0.12);
+    padding: 20px;
+}
+
+.botao_agenda {
+    display: inline-block;
+    background: #D6336C;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+.botao_agenda:hover { background: #B82A5B; }
+.botao_agenda:disabled { opacity: 0.45; cursor: not-allowed; }
+.botao_sec_agenda { background: transparent; color: #6B2F5C; border: 1px solid #6B2F5C; }
+.botao_sec_agenda:hover { background: #F4E9F2; }
+
+/* ---------- lista de profissionais ---------- */
+.grid_prof_agenda { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.card_prof_agenda { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.card_prof_agenda h3 { color: #2E2340; }
+.card_prof_agenda .botao_agenda { margin-top: 10px; }
+.foto_prof_agenda { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid #ECE7F6; }
+
+/* ---------- perfil do profissional ---------- */
+.perfil_agenda { display: flex; flex-direction: column; gap: 20px; }
+.cabecalho_prof_agenda { display: flex; align-items: center; gap: 16px; }
+.cabecalho_prof_agenda h2 { color: #2E2340; }
+.link_voltar_agenda { margin-left: auto; color: #6B2F5C; font-size: 0.85rem; text-decoration: none; }
+.link_voltar_agenda:hover { text-decoration: underline; }
+
+.titulo_agenda { color: #2E2340; margin-bottom: 14px; }
+.rotulo_agenda { display: block; color: #6B2F5C; font-weight: 600; font-size: 0.85rem; margin: 18px 0 8px; }
+.legenda_agenda { color: #999; font-weight: 400; font-size: 0.75rem; margin-left: 6px; }
+
+.select_agenda {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cfc4de;
+    border-radius: 8px;
+    background: #fff;
+    color: #2E2340;
+    font-size: 0.9rem;
+}
+
+/* dias */
+.dias_agenda { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+.dia_btn_agenda {
+    flex: 0 0 auto;
+    width: 58px;
+    padding: 8px 0;
+    border: 1px solid #6B2F5C;
+    border-radius: 10px;
+    background: #fff;
+    color: #6B2F5C;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.25;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+.dia_btn_agenda strong { font-size: 1.1rem; }
+.dia_btn_agenda:hover:not(:disabled) { background: #F4E9F2; }
+.dia_btn_agenda.selecionado { background: #6B2F5C; color: #fff; }
+.dia_btn_agenda:disabled { border-color: #ddd5e8; background: #F3F0F8; color: #aaa; cursor: not-allowed; }
+
+/* horários */
+.horarios_agenda { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; }
+.horarios_agenda .aviso_agenda { grid-column: 1 / -1; }
+.chip_horario_agenda {
+    padding: 9px 0;
+    border: 1px solid #6B2F5C;
+    border-radius: 8px;
+    background: #fff;
+    color: #6B2F5C;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.chip_horario_agenda:hover:not(:disabled) { background: #F4E9F2; }
+.chip_horario_agenda.selecionado { background: #D6336C; border-color: #D6336C; color: #fff; }
+.chip_horario_agenda:disabled {
+    background: #E6E0EE;
+    border-color: #E6E0EE;
+    color: #9A8FAB;
+    text-decoration: line-through;
+    cursor: not-allowed;
+}
+
+.rodape_agenda { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.resumo_agenda { color: #2E2340; font-size: 0.9rem; min-height: 1.2em; }
+.msg_agenda { font-size: 0.88rem; min-height: 1.2em; }
+.msg_agenda.erro { color: #C0392B; }
+.msg_agenda.ok { color: #1E8449; }
+
+/* ---------- listas de agendamentos ---------- */
+.lista_agenda { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.item_agenda { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.item_agenda > div:first-child { flex: 1; min-width: 200px; }
+.item_agenda p { font-size: 0.88rem; color: #444; }
+.item_agenda .sub_agenda { color: #777; }
+.acoes_agenda { display: flex; gap: 8px; }
+.status_agenda { padding: 3px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; background: #eee; color: #555; }
+.status_pendente { background: #FFF3CD; color: #8A6D1D; }
+.status_confirmado { background: #D5F5E3; color: #1E8449; }
+.status_cancelado { background: #F5D5D5; color: #A93226; }
+.status_concluido { background: #E3DDF0; color: #5A2751; }
+
+@media (max-width: 900px) {
+    .grid_prof_agenda { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+    .grid_prof_agenda { grid-template-columns: 1fr; }
+    .cabecalho_prof_agenda { flex-wrap: wrap; }
+    .link_voltar_agenda { margin-left: 0; }
+}
+
+/* ===== Menu lateral: título da "Área do profissional" ===== */
+.sidebar_pagprod .menu_titulo_agenda {
+    margin-top: 14px;
+    padding: 12px 14px 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    color: #D8C4E3;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+    .sidebar_pagprod .menu_titulo_agenda {
+        width: 100%;
+        margin-top: 6px;
+    }
+}
+
+/* ===== Painel do empresário (Meus serviços / Meus horários) ===== */
+.flash_painel {
+    margin: 0 0 16px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.flash_ok    { background: #D5F5E3; color: #1E6B3E; }
+.flash_erro  { background: #F9DADA; color: #A93226; }
+.flash_aviso { background: #FFF3CD; color: #8A6D1D; }
+
+.passos_painel {
+    margin: 0 0 18px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: #FFF8E1;
+    color: #5C4A12;
+    font-size: 0.88rem;
+}
+.passos_painel ol { margin: 8px 0 0 20px; display: flex; flex-direction: column; gap: 4px; }
+.passos_painel a { color: #8A2D5A; font-weight: 600; }
+.passos_painel li.feito { text-decoration: line-through; opacity: 0.6; }
+.passos_painel li.feito::marker { content: "✓ "; }
+
+.form_painel { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
+.subtitulo_painel { color: #2E2340; margin: 0; }
+
+.campo_painel { display: flex; flex-direction: column; gap: 6px; }
+.campo_painel label { color: #6B2F5C; font-weight: 600; font-size: 0.85rem; }
+.campo_painel small { color: #8a8099; font-size: 0.76rem; }
+.campo_painel input[type="text"],
+.campo_painel input[type="number"],
+.campo_painel select,
+.campo_painel textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cfc4de;
+    border-radius: 8px;
+    background: #fff;
+    color: #2E2340;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+.campo_painel textarea { resize: vertical; }
+.campo_painel input:focus,
+.campo_painel select:focus,
+.campo_painel textarea:focus { outline: 2px solid #D6336C; outline-offset: 1px; border-color: transparent; }
+.opcional_painel { color: #999; font-weight: 400; font-size: 0.76rem; }
+
+.linha_campos_painel { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.foto_atual_painel { display: flex; align-items: center; gap: 12px; }
+.foto_atual_painel img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; }
+
+.botoes_painel { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.botao_perigo_painel { background: #C0392B; }
+.botao_perigo_painel:hover { background: #A93226; }
+
+/* lista de serviços */
+.item_servico_painel { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.foto_servico_painel { width: 72px; height: 72px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+.foto_vazia_painel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ECE7F6;
+    color: #8a6fa8;
+    font-size: 1.6rem;
+}
+.texto_servico_painel { flex: 1; min-width: 200px; }
+.texto_servico_painel p { font-size: 0.88rem; color: #444; margin: 2px 0; }
+.item_servico_painel .acoes_agenda { align-items: center; }
+
+/* tabela de horários */
+.tabela_scroll_painel { overflow-x: auto; }
+.tabela_horarios_painel { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.tabela_horarios_painel th {
+    text-align: left;
+    color: #6B2F5C;
+    font-size: 0.78rem;
+    padding: 8px 10px;
+    border-bottom: 2px solid #ECE7F6;
+}
+.tabela_horarios_painel td { padding: 8px 10px; border-bottom: 1px solid #F1ECF7; white-space: nowrap; }
+.tabela_horarios_painel input[type="checkbox"] { width: 18px; height: 18px; accent-color: #D6336C; cursor: pointer; }
+.tabela_horarios_painel input[type="time"] {
+    padding: 6px 8px;
+    border: 1px solid #cfc4de;
+    border-radius: 8px;
+    font-family: inherit;
+    color: #2E2340;
+}
+.tabela_horarios_painel input[type="time"]:disabled { background: #F3F0F8; color: #aaa; }
+.turno_painel span { margin: 0 6px; color: #8a8099; }
+.tabela_horarios_painel tr.inativo_painel td strong { color: #9a90ab; font-weight: 500; }
+
+@media (max-width: 560px) {
+    .linha_campos_painel { grid-template-columns: 1fr; }
+}
+
+/* ===== Catálogo de serviços e lista de clientes ===== */
+.sem_foto_catalogo {
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ECE7F6;
+    color: #8a6fa8;
+    font-size: 2rem;
+}
+.card-servico_pagprod .acao_card_catalogo { margin: auto 12px 12px; padding-top: 4px; }
+.card-servico_pagprod .acao_card_catalogo .botao_agenda { display: block; text-align: center; padding: 8px 12px; font-size: 0.8rem; }
+.avatar_cliente_painel { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.link_tel_painel { color: #6B2F5C; text-decoration: none; font-weight: 600; }
+.link_tel_painel:hover { text-decoration: underline; }
+
+.btn-add a { color: inherit; text-decoration: none; }

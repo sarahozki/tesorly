@@ -1,44 +1,43 @@
 <?php
+// Área do empresário: clientes que já agendaram com ele (nome e telefone para contato).
+require_once RAIZ . '/funcoes.php';
 
-    require_once ("../conexao.php");
+if (empty($ehEmpresario)) {
+    echo '<p class="aviso_agenda">Esta área é só para empresários.</p>';
+    return;
+}
 
-    $sql = "SELECT user_nome, user_email, user_telefone, user_fotos FROM usuarios";
-    $stmt = $conexao->prepare($sql);
-    $stmt->execute();
-
-    $resultados = $stmt->get_result();
-
+$clientes = agendaListarClientesDoEmpresario($conexao, $meuIdEmpresario);
 ?>
+<h2 class="titulo_pagina_agenda">Meus clientes</h2>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes</title>
-</head>
-<body>
-    <h1>Lista de Clientes (teste)</h1>
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Telefone</th>
-                <th>Fotos</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($row = $resultados->fetch_assoc()): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($row['user_nome']); ?></td>
-                    <td><?php echo htmlspecialchars($row['user_email']); ?></td>
-                    <td><?php echo htmlspecialchars($row['user_telefone']); ?></td>
-                    <td><?php echo htmlspecialchars($row['user_fotos']); ?></td>
-                </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
-</body>
-</html>
+<?php if (!$clientes): ?>
+    <p class="aviso_agenda">Ainda não há clientes com agendamento. Eles aparecem aqui assim que alguém agendar com você.</p>
+<?php else: ?>
+    <ul class="lista_agenda">
+        <?php foreach ($clientes as $c): ?>
+            <?php
+                $foto = !empty($c['user_fotos']) ? '../uploads/usuarios/' . $c['user_fotos'] : '../imagens/fotouser.png';
+                $telefone = (string)($c['user_telefone'] ?? '');
+                $soNumeros = preg_replace('/\D/', '', $telefone);
+            ?>
+            <li class="card_agenda item_agenda">
+                <img class="avatar_cliente_painel" src="<?= htmlspecialchars($foto) ?>" alt="">
+                <div>
+                    <strong><?= htmlspecialchars($c['user_nome']) ?></strong>
+                    <p>
+                        <?php if ($soNumeros !== ''): ?>
+                            <a class="link_tel_painel" href="tel:<?= htmlspecialchars($soNumeros) ?>"><?= htmlspecialchars($telefone) ?></a>
+                        <?php else: ?>
+                            Sem telefone cadastrado
+                        <?php endif; ?>
+                    </p>
+                    <p class="sub_agenda">
+                        <?= (int)$c['total'] ?> agendamento<?= (int)$c['total'] === 1 ? '' : 's' ?>
+                        · mais recente: <?= date('d/m/Y', strtotime($c['mais_recente'])) ?> às <?= date('H:i', strtotime($c['mais_recente'])) ?>
+                    </p>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>

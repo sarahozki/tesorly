@@ -20,13 +20,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // liga os efeitos de "aparecer ao rolar"; se o home.js não carregar em 3s, desfaz (o conteúdo nunca fica escondido)
+        document.documentElement.classList.add('js');
+        setTimeout(function () { var h = document.documentElement; if (!h.classList.contains('js-ready')) { h.classList.remove('js'); } }, 3000);
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/home.css">
     <script src="../css/script.js" defer></script>
+    <script src="js/home.js" defer></script>
     <title>Tesorly</title>
 </head>
 <body class="body_index">
+
+    <div class="scroll_progress_index" aria-hidden="true"></div>
+    <div class="cursor_glow_index" aria-hidden="true"></div>
 
     <a href="pags_emp/pag_prod.php" class="dev_link_index"></a>
 
@@ -53,6 +63,15 @@
 
     <!-- ◢◤◢◤◢◤ BANNERS ◢◤◢◤◢◤ -->
     <section class="hero_index" id="home">
+        <div class="hero_deco_index" aria-hidden="true">
+            <span class="deco_index deco_flor_index" data-depth="0.5">✿</span>
+            <span class="deco_index deco_flor2_index" data-depth="0.35">✿</span>
+            <span class="deco_index deco_circulo_index" data-depth="0.25"></span>
+            <span class="deco_index deco_circulo2_index" data-depth="0.6"></span>
+            <span class="deco_index deco_losango_index" data-depth="0.7"></span>
+            <span class="deco_index deco_anel_index" data-depth="0.45"></span>
+        </div>
+
         <div class="hero_text_index">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" width="300" height="340">
                 <defs>

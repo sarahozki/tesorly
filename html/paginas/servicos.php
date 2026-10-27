@@ -1,117 +1,48 @@
 <?php
-    require_once ("../conexao.php");
-    require_once ("../funcoes.php");
+// Catálogo: todos os serviços cadastrados pelos profissionais.
+require_once RAIZ . '/funcoes.php';
 
-
-
-
-echo "<h2> Serviços Disponíveis </h2>";
-
-$produtos = listarprodutos($conexao);
-
-foreach ($produtos as $produto) {
-    print_r($produto);
-    echo "<br>";
-}
-
+$servicos = catalogoListarServicos($conexao);
 ?>
+<h2 class="titulo_pagina_agenda">Serviços disponíveis</h2>
 
+<?php if (!$servicos): ?>
+    <p class="aviso_agenda">Nenhum serviço cadastrado ainda.</p>
+<?php else: ?>
+    <div class="grid-servicos_pagprod">
+        <?php foreach ($servicos as $s): ?>
+            <?php $meu = !empty($ehEmpresario) && (int)$s['idempresario'] === (int)$meuIdEmpresario; ?>
+            <article class="card-servico_pagprod">
+                <?php if (!empty($s['serv_fotos'])): ?>
+                    <img src="../uploads/servicos/<?= htmlspecialchars($s['serv_fotos']) ?>" alt="<?= htmlspecialchars($s['serv_nome']) ?>">
+                <?php else: ?>
+                    <div class="sem_foto_catalogo" aria-hidden="true">✂</div>
+                <?php endif; ?>
 
-<!-- ===== Catálogo de serviços ===== -->
-            <main class="catalogo_pagprod">
+                <span class="tag_pagprod"><?= htmlspecialchars($s['serv_nome']) ?></span>
+                <p class="descricao_pagprod"><?= htmlspecialchars($s['serv_descricao']) ?></p>
 
-                <div class="grid-servicos_pagprod">
-
-                    <article class="card-servico_pagprod">
-                        <img src="hidratacao1.jpg" alt="Hidratação capilar">
-                        <span class="tag_pagprod">Hidratação</span>
-                        <p class="descricao_pagprod">Hidratação Wella feita com a maior qualidade para vocês clientes.</p>
-                        <div class="info_pagprod">
-                            <span class="label_pagprod">Duração</span>
-                            <span class="valor_pagprod">15 min.</span>
-                        </div>
-                        <div class="info info-preco_pagprod">
-                            <span class="label_pagprod">Produtos<br><strong>Wella</strong></span>
-                            <span class="preco_pagprod">R$ 100,00</span>
-                        </div>
-                    </article>
-
-                    <article class="card-servico_pagprod">
-                        <img src="hidratacao2.jpg" alt="Hidratação capilar">
-                        <span class="tag_pagprod">Hidratação</span>
-                        <p class="descricao_pagprod">Hidratação Wella feita com a maior qualidade para vocês clientes.</p>
-                        <div class="info_pagprod">
-                            <span class="label_pagprod">Duração</span>
-                            <span class="valor_pagprod">15 min.</span>
-                        </div>
-                        <div class="info info-preco_pagprod">
-                            <span class="label_pagprod">Produtos<br><strong>Wella</strong></span>
-                            <span class="preco_pagprod">R$ 100,00</span>
-                        </div>
-                    </article>
-
-                    <article class="card-servico_pagprod">
-                        <img src="hidratacao3.jpg" alt="Hidratação capilar">
-                        <span class="tag_pagprod">Hidratação</span>
-                        <p class="descricao_pagprod">Hidratação Wella feita com a maior qualidade para vocês clientes.</p>
-                        <div class="info_pagprod">
-                            <span class="label_pagprod">Duração</span>
-                            <span class="valor_pagprod">15 min.</span>
-                        </div>
-                        <div class="info info-preco_pagprod">
-                            <span class="label_pagprod">Produtos<br><strong>Wella</strong></span>
-                            <span class="preco_pagprod">R$ 100,00</span>
-                        </div>
-                    </article>
-
-                    <article class="card-servico_pagprod">
-                        <img src="hidratacao4.jpg" alt="Hidratação capilar">
-                        <span class="tag_pagprod">Hidratação</span>
-                        <p class="descricao_pagprod">Hidratação Wella feita com a maior qualidade para vocês clientes.</p>
-                        <div class="info_pagprod">
-                            <span class="label_pagprod">Duração</span>
-                            <span class="valor_pagprod">15 min.</span>
-                        </div>
-                        <div class="info info-preco_pagprod">
-                            <span class="label_pagprod">Produtos<br><strong>Wella</strong></span>
-                            <span class="preco_pagprod">R$ 100,00</span>
-                        </div>
-                    </article>
-
-                    <article class="card-servico_pagprod">
-                        <img src="hidratacao5.jpg" alt="Hidratação capilar">
-                        <span class="tag_pagprod">Hidratação</span>
-                        <p class="descricao_pagprod">Hidratação Wella feita com a maior qualidade para vocês clientes.</p>
-                        <div class="info_pagprod">
-                            <span class="label_pagprod">Duração</span>
-                            <span class="valor_pagprod">15 min.</span>
-                        </div>
-                        <div class="info info-preco_pagprod">
-                            <span class="label_pagprod">Produtos<br><strong>Wella</strong></span>
-                            <span class="preco_pagprod">R$ 100,00</span>
-                        </div>
-                    </article>
-
-                    <article class="card-servico_pagprod">
-                        <img src="hidratacao6.jpg" alt="Hidratação capilar">
-                        <span class="tag_pagprod">Hidratação</span>
-                        <p class="descricao_pagprod">Hidratação Wella feita com a maior qualidade para vocês clientes.</p>
-                        <div class="info_pagprod">
-                            <span class="label_pagprod">Duração</span>
-                            <span class="valor_pagprod">15 min.</span>
-                        </div>
-                        <div class="info info-preco_pagprod">
-                            <span class="label_pagprod">Produtos<br><strong>Wella</strong></span>
-                            <span class="preco_pagprod">R$ 100,00</span>
-                        </div>
-                    </article>
-
+                <div class="info_pagprod">
+                    <span class="label_pagprod">Duração</span>
+                    <span class="valor_pagprod"><?= htmlspecialchars(agendaDuracaoTexto($s['serv_tempo'])) ?></span>
+                </div>
+                <div class="info_pagprod info-preco_pagprod">
+                    <span class="label_pagprod">Profissional<br><strong><?= htmlspecialchars($s['profissional']) ?></strong></span>
+                    <span class="preco_pagprod">R$ <?= number_format((float)$s['serv_valor'], 2, ',', '.') ?></span>
                 </div>
 
-                <button class="btn-add"><a href="../produtos/cad_prod.php">Adicionar novo serviço</a> <span>+</span></button>
-
-            </main>
-
-        </div>
-
+                <div class="acao_card_catalogo">
+                    <?php if ($meu): ?>
+                        <a class="botao_agenda botao_sec_agenda" href="?pagina=meus_servicos&amp;editar=<?= (int)$s['idservicos'] ?>#form_servico">Gerenciar</a>
+                    <?php else: ?>
+                        <a class="botao_agenda" href="?pagina=profissional&amp;id=<?= (int)$s['idempresario'] ?>">Agendar</a>
+                    <?php endif; ?>
+                </div>
+            </article>
+        <?php endforeach; ?>
     </div>
+<?php endif; ?>
+
+<?php if (!empty($ehEmpresario)): ?>
+    <button class="btn-add"><a href="?pagina=meus_servicos">Adicionar novo serviço</a> <span>+</span></button>
+<?php endif; ?>

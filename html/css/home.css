@@ -1,0 +1,204 @@
+/* ==========================================================================
+   PÁGINA INICIAL — interações de rolagem e mouse (usa js/home.js)
+   Carregado DEPOIS do style.css. Nada aqui depende do JS para o conteúdo
+   aparecer: se o JS falhar, tudo continua visível.
+   ========================================================================== */
+
+html { scroll-behavior: smooth; }
+.body_index section[id] { scroll-margin-top: 76px; } /* compensa o cabeçalho fixo */
+
+/* ---------- barra de progresso da rolagem ---------- */
+.scroll_progress_index {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    z-index: 100;
+    background: linear-gradient(90deg, #B79CF2, #7C5CFC);
+    transform-origin: 0 50%;
+    transform: scaleX(var(--progresso, 0));
+    pointer-events: none;
+}
+
+/* ---------- brilho que acompanha o cursor ---------- */
+.cursor_glow_index {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 520px;
+    height: 520px;
+    margin: -260px 0 0 -260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124, 92, 252, 0.18) 0%, rgba(124, 92, 252, 0) 65%);
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    will-change: transform;
+}
+.cursor_glow_index.ativo_index { opacity: 1; }
+
+/* ---------- cabeçalho fixo que encolhe ao rolar ---------- */
+.header_index {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.88);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    transition: padding 0.3s ease, box-shadow 0.3s ease;
+}
+.header_index.compacto_index {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    box-shadow: 0 8px 24px -12px rgba(36, 28, 59, 0.28);
+}
+
+.nav_list_index a {
+    position: relative;
+    padding-bottom: 4px;
+}
+.nav_list_index a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: #7C5CFC;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+.nav_list_index a:hover::after,
+.nav_list_index a.ativo_index::after { transform: scaleX(1); }
+.nav_list_index a.ativo_index { color: #7C5CFC; }
+
+/* ---------- hero: formas decorativas com profundidade ---------- */
+.hero_index {
+    position: relative;
+    overflow: hidden;
+}
+.hero_text_index,
+.hero_image_index {
+    position: relative;
+    z-index: 1;
+}
+
+.hero_deco_index {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+.deco_index {
+    position: absolute;
+    display: block;
+    will-change: translate;
+    animation: deco_flutuar_index 9s ease-in-out infinite alternate;
+}
+.deco_flor_index        { top: 12%; left: 5%;  font-size: 3.2rem; line-height: 1; color: rgba(255, 255, 255, 0.75); }
+.deco_flor2_index       { top: auto; bottom: 12%; left: 44%; font-size: 2.2rem; color: #B79CF2; animation-duration: 11s; }
+.deco_circulo_index     { top: 7%;  right: 7%;  width: 130px; height: 130px; border-radius: 50%; background: rgba(255, 255, 255, 0.35); }
+.deco_circulo2_index    { top: auto; bottom: 9%; right: 3%; width: 70px; height: 70px; border-radius: 50%; background: rgba(124, 92, 252, 0.25); animation-duration: 12s; }
+.deco_losango_index     { top: 16%; left: 46%; width: 26px; height: 26px; background: rgba(124, 92, 252, 0.4); rotate: 45deg; animation-duration: 10s; }
+.deco_anel_index        { bottom: 16%; left: 3%; width: 96px; height: 96px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, 0.6); animation-duration: 13s; }
+
+@keyframes deco_flutuar_index {
+    from { transform: rotate(-8deg) scale(1); }
+    to   { transform: rotate(8deg) scale(1.1); }
+}
+
+/* botões "magnéticos": o JS define --tx e --ty quando o mouse chega perto */
+.hero_buttons_index .btn_primary_index,
+.hero_buttons_index .btn_outline_index {
+    transform: translate(var(--tx, 0px), var(--ty, 0px));
+    transition: transform 0.2s ease-out, opacity 0.15s ease;
+}
+.hero_buttons_index .btn_primary_index:hover,
+.hero_buttons_index .btn_outline_index:hover {
+    transform: translate(var(--tx, 0px), calc(var(--ty, 0px) - 2px));
+}
+
+/* ---------- cartões: inclinam e brilham seguindo o mouse ---------- */
+.feature_card_index,
+.comment_card_index {
+    position: relative;
+    overflow: hidden;
+    transform: perspective(900px) translateY(var(--lift, 0px)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: opacity 0.7s ease,
+                translate 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+                transform 0.2s ease-out,
+                box-shadow 0.3s ease;
+    transition-delay: calc(var(--i, 0) * 100ms), calc(var(--i, 0) * 100ms), 0s, 0s;
+}
+.feature_card_index::after,
+.comment_card_index::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.feature_card_index::after { background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.7), transparent 60%); }
+.comment_card_index::after { background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(124, 92, 252, 0.12), transparent 60%); }
+
+.feature_card_index:hover,
+.comment_card_index:hover {
+    --lift: -6px;
+    box-shadow: 0 28px 44px -26px rgba(36, 28, 59, 0.45);
+}
+.feature_card_index:hover::after,
+.comment_card_index:hover::after { opacity: 1; }
+
+/* fundadores: a bolinha roxa de trás se afasta do mouse, a foto dá um zoom */
+.founder_photo_wrap_index::before {
+    transform: translate(var(--px, 0px), var(--py, 0px));
+    transition: transform 0.25s ease-out;
+}
+.founder_photo_index { transition: transform 0.3s ease; }
+.founder_card_index:hover .founder_photo_index { transform: scale(1.05); }
+
+/* ---------- aparecer ao rolar (só para quem não pediu menos animação) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+    .js :is(.features_title_index, .feature_card_index,
+            .comments_title_index, .comments_subtitle_index, .comment_card_index,
+            .founders_title_index, .founder_card_index, .founders_description_index) {
+        opacity: 0;
+        translate: 0 36px;
+    }
+
+    .js :is(.features_title_index, .comments_title_index, .comments_subtitle_index,
+            .founders_title_index, .founder_card_index, .founders_description_index) {
+        transition: opacity 0.7s ease, translate 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+        transition-delay: calc(var(--i, 0) * 100ms);
+    }
+
+    .js .visivel_index {
+        opacity: 1;
+        translate: 0 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .deco_index { animation: none; }
+    .cursor_glow_index { display: none; }
+}
+
+/* sem mouse (celular/tablet): nada de inclinação nem brilho */
+@media (hover: none), (pointer: coarse) {
+    .cursor_glow_index { display: none; }
+    .feature_card_index,
+    .comment_card_index { transform: none; }
+}
+
+@media (max-width: 900px) {
+    .deco_flor_index { font-size: 2.2rem; }
+    .deco_circulo_index { width: 80px; height: 80px; }
+    .deco_anel_index { width: 60px; height: 60px; }
+}

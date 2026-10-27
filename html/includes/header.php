@@ -1,5 +1,25 @@
 <?php
 $pagina = $pagina ?? ($_GET['pagina'] ?? 'produtos');
+$ehEmpresario = $ehEmpresario ?? false;
+
+// Menu de todo mundo (cliente e empresário)
+$menuGeral = [
+    'servicos'      => 'Serviços disponíveis',
+    'agenda'        => 'Agenda',
+    'avalie'        => 'Avalie',
+    'perfil'        => 'Meu perfil',
+    'profissionais' => 'Profissionais',
+];
+
+// Menu SÓ do empresário (cliente não vê e não consegue abrir: o app/index.php também bloqueia)
+$menuEmpresario = [
+    'meus_servicos' => 'Meus serviços',
+    'meus_horarios' => 'Meus horários',
+    'clientes'      => 'Clientes',
+];
+
+// o perfil de um profissional ("profissional") conta como "Profissionais" no menu
+$paginaMenu = ($pagina === 'profissional') ? 'profissionais' : $pagina;
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -7,6 +27,7 @@ $pagina = $pagina ?? ($_GET['pagina'] ?? 'produtos');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/agenda.css">
     <title>Tesorly</title>
 </head>
 <body>
@@ -19,12 +40,16 @@ $pagina = $pagina ?? ($_GET['pagina'] ?? 'produtos');
         <div class="conteudo_pagprod">
             <nav class="sidebar_pagprod">
                 <ul>
-                    <li><a href="?pagina=servicos"     class="<?= $pagina === 'servicos'     ? 'ativo' : '' ?>">Serviços disponíveis</a></li>
-                    <li><a href="?pagina=agenda"        class="<?= $pagina === 'agenda'        ? 'ativo' : '' ?>">Agenda</a></li>
-                    <li><a href="?pagina=avalie"        class="<?= $pagina === 'avalie'        ? 'ativo' : '' ?>">Avalie</a></li>
-                    <li><a href="?pagina=perfil"        class="<?= $pagina === 'perfil'        ? 'ativo' : '' ?>">Meu perfil</a></li>
-                    <li><a href="?pagina=profissionais" class="<?= $pagina === 'profissionais' ? 'ativo' : '' ?>">Profissionais</a></li>
-                    <li><a href="?pagina=clientes"      class="<?= $pagina === 'clientes'      ? 'ativo' : '' ?>">Clientes</a></li>
+                    <?php foreach ($menuGeral as $chave => $texto): ?>
+                        <li><a href="?pagina=<?= $chave ?>" class="<?= $paginaMenu === $chave ? 'ativo' : '' ?>"><?= $texto ?></a></li>
+                    <?php endforeach; ?>
+
+                    <?php if ($ehEmpresario): ?>
+                        <li class="menu_titulo_agenda">Área do profissional</li>
+                        <?php foreach ($menuEmpresario as $chave => $texto): ?>
+                            <li><a href="?pagina=<?= $chave ?>" class="<?= $paginaMenu === $chave ? 'ativo' : '' ?>"><?= $texto ?></a></li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </ul>
                 <a href="../deslogar.php" class="logout_pagprod">Logout</a>
             </nav>
