@@ -6,11 +6,11 @@ if (!isset($_SESSION['id'])) {
     return;
 }
 
-$idusuario    = (int)$_SESSION['id'];
-$meus         = agendaListarPorUsuario($conexao, $idusuario);
+$idusuario = (int)$_SESSION['id'];
+$meus = agendaListarPorUsuario($conexao, $idusuario);
 $ehProfissional = agendaIdEmpresarioDoUsuario($conexao, $idusuario) !== null;
-$recebidos    = $ehProfissional ? agendaListarRecebidos($conexao, $idusuario) : [];
-$agora        = date('Y-m-d H:i:s');
+$recebidos = $ehProfissional ? agendaListarRecebidos($conexao, $idusuario) : [];
+$agora = date('Y-m-d H:i:s');
 ?>
 <script src="../js/agenda.js" defer></script>
 

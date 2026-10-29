@@ -109,15 +109,13 @@
         const quantidade = document.getElementById('regra-quantidade');
         const numero = document.getElementById('regra-numero');
         const letramaius = document.getElementById('regra-maius');
-
-        document.getElementById('sou_emp').onclick = function() {
         const senha = document.getElementById('senha');
-    const mostrarSenha = document.getElementById('mostrar-senha');
+        const mostrarSenha = document.getElementById('mostrar-senha');
 
     mostrarSenha.addEventListener('click', function() {
         senha.type = mostrarSenha.checked ? 'text' : 'password';
     });
-}
+
  function validar(regra, valor) {
 
             if (valor) {
@@ -182,6 +180,7 @@
             }
 
         });
+        
 
 
     </script>

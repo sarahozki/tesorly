@@ -1,6 +1,7 @@
 <?php
 require_once RAIZ . '/funcoes.php';
 
+ // Verifica se o valor da cidade é nulo ou uma string, e remove espaços em branco do início e do fim
 $cidade        = is_string($_GET['cidade'] ?? null) ? trim($_GET['cidade']) : '';
 $cidades       = agendaListarCidades($conexao);
 $profissionais = agendaListarProfissionais($conexao, $cidade);
