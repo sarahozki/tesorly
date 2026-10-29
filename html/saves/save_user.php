@@ -9,6 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 include '../conexao.php';
 include '../funcoes.php';
 
+// Se a foto passa do limite de envio do servidor (post_max_size), o PHP descarta TUDO: $_POST e $_FILES chegam vazios
+if (empty($_POST) && empty($_FILES) && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+    echo "<script>alert('O envio passou do limite do servidor (provavelmente a foto é grande demais). Use uma foto menor.'); window.history.back();</script>";
+    exit;
+}
+
 $nome       = trim($_POST['nome'] ?? '');
 $email      = trim($_POST['email'] ?? '');
 $telefone   = trim($_POST['telefone'] ?? '');
@@ -34,14 +40,10 @@ if (strlen($senha_pura) < 8 || !preg_match('/[0-9]/', $senha_pura) || !preg_matc
     exit;
 }
 
-// 4. Upload da foto
-if ($fotos === null || $fotos['error'] === UPLOAD_ERR_NO_FILE) {
-    echo "<script>alert('Envie uma foto.'); window.history.back();</script>";
-    exit;
-}
-
-if ($fotos['error'] !== UPLOAD_ERR_OK) {
-    echo "<script>alert('Erro no upload da foto (código {$fotos['error']}). Talvez o arquivo seja grande demais.'); window.history.back();</script>";
+// 4. Foto (tipo real da imagem e tamanho) — antes de gravar qualquer coisa
+$erro_foto = usuarioValidarFoto($fotos);
+if ($erro_foto !== null) {
+    echo "<script>alert(" . json_encode($erro_foto) . "); window.history.back();</script>";
     exit;
 }
 
@@ -62,7 +64,7 @@ try {
 
 // 6. Resultado
 if (!$id_usuario) {
-    echo "<script>alert('Foto inválida. Use jpg, png ou webp.'); window.history.back();</script>";
+    echo "<script>alert('Não foi possível salvar a foto no servidor. Verifique a permissão de escrita da pasta uploads/usuarios.'); window.history.back();</script>";
     mysqli_close($conexao);
     exit;
 }

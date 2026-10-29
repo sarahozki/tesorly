@@ -1,12 +1,46 @@
 <?php
 require_once RAIZ . '/funcoes.php';
 
-$profissionais = agendaListarProfissionais($conexao);
+$cidade        = is_string($_GET['cidade'] ?? null) ? trim($_GET['cidade']) : '';
+$cidades       = agendaListarCidades($conexao);
+$profissionais = agendaListarProfissionais($conexao, $cidade);
 ?>
 <h2 class="titulo_pagina_agenda">Profissionais</h2>
 
+<form class="card_agenda filtro_prof_agenda" method="get" action="">
+    <input type="hidden" name="pagina" value="profissionais">
+
+    <div class="campo_filtro_agenda">
+        <label for="filtro_cidade">Buscar por cidade</label>
+        <input type="search" id="filtro_cidade" name="cidade" list="lista_cidades" maxlength="100" autocomplete="off"
+               placeholder="Digite o nome da cidade" value="<?= htmlspecialchars($cidade) ?>" onchange="this.form.submit()">
+        <datalist id="lista_cidades">
+            <?php foreach ($cidades as $c): ?>
+                <option value="<?= htmlspecialchars($c) ?>"></option>
+            <?php endforeach; ?>
+        </datalist>
+    </div>
+
+    <button type="submit" class="botao_agenda">Buscar</button>
+    <?php if ($cidade !== ''): ?>
+        <a class="botao_agenda botao_sec_agenda" href="?pagina=profissionais">Limpar</a>
+    <?php endif; ?>
+</form>
+
+<?php if ($cidade !== ''): ?>
+    <p class="sub_agenda resultado_filtro_agenda">
+        <?= count($profissionais) ?> profissiona<?= count($profissionais) === 1 ? 'l' : 'is' ?> em “<?= htmlspecialchars($cidade) ?>”
+    </p>
+<?php endif; ?>
+
 <?php if (!$profissionais): ?>
-    <p class="aviso_agenda">Nenhum profissional cadastrado ainda.</p>
+    <p class="aviso_agenda">
+        <?php if ($cidade !== ''): ?>
+            Nenhum profissional encontrado em “<?= htmlspecialchars($cidade) ?>”. <a href="?pagina=profissionais">Ver todos</a>
+        <?php else: ?>
+            Nenhum profissional cadastrado ainda.
+        <?php endif; ?>
+    </p>
 <?php else: ?>
     <div class="grid_prof_agenda">
         <?php foreach ($profissionais as $p): ?>

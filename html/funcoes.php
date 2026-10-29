@@ -42,48 +42,79 @@ function listaruser($conexao) {
 }
 
 //string s numero i
+// Confere a foto de perfil ANTES de salvar. Retorna null se estiver tudo certo, ou o texto do problema.
+// Aceita jpg, png e webp de até 5 MB e confere o conteúdo real do arquivo (não só a extensão).
+function usuarioValidarFoto($fotos) {
+    if (!is_array($fotos) || ($fotos['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+        return 'Envie uma foto.';
+    }
+
+    if ($fotos['error'] === UPLOAD_ERR_INI_SIZE || $fotos['error'] === UPLOAD_ERR_FORM_SIZE) {
+        return 'A foto é grande demais. O limite do servidor é ' . ini_get('upload_max_filesize') . '.';
+    }
+    if ($fotos['error'] !== UPLOAD_ERR_OK) {
+        return 'Não foi possível enviar a foto (código ' . (int)$fotos['error'] . '). Tente novamente.';
+    }
+
+    if ($fotos['size'] > 5 * 1024 * 1024) {
+        return 'A foto é grande demais. O limite é 5 MB.';
+    }
+
+    $info = @getimagesize($fotos['tmp_name']);
+    $tiposPermitidos = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP];
+    if (!$info || !in_array($info[2], $tiposPermitidos, true)) {
+        return 'Foto inválida. Use um arquivo jpg, png ou webp.';
+    }
+
+    return null;
+}
+
+// Cadastra o usuário e guarda a foto. Retorna o ID do novo usuário (int) ou false se a foto for
+// inválida / não puder ser salva. Se o banco recusar (ex.: e-mail repetido), a exceção sobe para
+// quem chamou, mas a foto já gravada é apagada antes.
 function salvaruser($conexao, $nome, $email, $senha, $telefone, $fotos) {
 
-    // 1. Definir pasta de destino (ajuste o caminho conforme sua estrutura)
-    $pasta_destino = '../uploads/usuarios/';
-
-    // Cria a pasta se não existir
-    if (!is_dir($pasta_destino)) {
-        mkdir($pasta_destino, 0755, true);
-    }
-
-    // 2. Validar se o upload realmente ocorreu sem erro
-    if ($fotos['error'] !== UPLOAD_ERR_OK) {
+    // 1. Foto válida? (tipo real da imagem e tamanho)
+    if (usuarioValidarFoto($fotos) !== null) {
         return false;
     }
 
-    // 3. Gerar nome único pra evitar sobrescrever arquivos com mesmo nome
-    $extensao = pathinfo($fotos['name'], PATHINFO_EXTENSION);
-    $nome_arquivo = uniqid('user_', true) . '.' . $extensao;
+    // 2. Pasta de destino (caminho absoluto: não depende de quem chamou)
+    $pasta_destino = __DIR__ . '/uploads/usuarios/';
+    if (!is_dir($pasta_destino) && !mkdir($pasta_destino, 0755, true)) {
+        return false;
+    }
+
+    // 3. Nome único, com a extensão decidida pelo conteúdo da imagem (nunca pelo nome enviado)
+    $info = getimagesize($fotos['tmp_name']);
+    $extensoes = [IMAGETYPE_JPEG => 'jpg', IMAGETYPE_PNG => 'png', IMAGETYPE_WEBP => 'webp'];
+    $nome_arquivo = 'user_' . bin2hex(random_bytes(8)) . '.' . $extensoes[$info[2]];
     $caminho_completo = $pasta_destino . $nome_arquivo;
 
-    // 4. Mover o arquivo do temporário pra pasta definitiva
+    // 4. Mover o arquivo temporário para a pasta definitiva
     if (!move_uploaded_file($fotos['tmp_name'], $caminho_completo)) {
+        return false; // normalmente: o Apache não tem permissão de escrita em uploads/usuarios
+    }
+
+    // 5. Salvar no banco o NOME do arquivo
+    try {
+        $sql = "INSERT INTO usuarios (user_nome, user_email, user_senha, user_telefone, user_fotos) VALUES (?, ?, ?, ?, ?)";
+        $comando = mysqli_prepare($conexao, $sql);
+        mysqli_stmt_bind_param($comando, 'sssss', $nome, $email, $senha, $telefone, $nome_arquivo);
+        $funcionou = mysqli_stmt_execute($comando);
+        $novo_id = mysqli_stmt_insert_id($comando);
+        mysqli_stmt_close($comando);
+    } catch (Throwable $erro) {
+        @unlink($caminho_completo); // não deixa foto órfã
+        throw $erro;
+    }
+
+    if (!$funcionou) {
+        @unlink($caminho_completo);
         return false;
     }
 
-    // 5. Agora sim, salvar o NOME (string) no banco
-    $sql = "INSERT INTO usuarios (user_nome, user_email, user_senha, user_telefone, user_fotos) VALUES (?, ?, ?, ?, ?)";
-    $comando = mysqli_prepare($conexao, $sql);
-    mysqli_stmt_bind_param($comando, 'sssss', $nome, $email, $senha, $telefone, $nome_arquivo);
-    $funcionou = mysqli_stmt_execute($comando);
-    mysqli_stmt_close($comando);
-
-    // Se falhar ao salvar no banco, remove o arquivo que foi movido (opcional, mas recomendado)
-    if (!$funcionou) {
-        unlink($caminho_completo);
-    }
-
-    return $funcionou;
-
-    $tipos_permitidos = ['jpg', 'jpeg', 'png', 'webp'];
-if (!in_array(strtolower($extensao), $tipos_permitidos)) {
-    return false;}
+    return (int)$novo_id; // o cadastro do empresário (cad_emp.php) precisa desse ID
 }
 
 function editaruser($conexao, $nome, $email, $senha, $telefone, $fotos, $idusuarios){
@@ -177,12 +208,19 @@ function pesquisarprodutosId($conexao,$idprodutos) {
 //--------------------SERVIÇOS-----------------------//
 
 
-function salvarservico( $conexao,$servico,$valor,$descricao,$tempo,$fotos){
+function salvarservico( $conexao,$servico,$valor,$descricao,$tempo,$fotos,$idempresario = null){
+    // o serviço precisa de dono (empresario_idempresario é obrigatório): se não vier, usa o empresário logado
+    if ($idempresario === null && isset($_SESSION['id'])) {
+        $idempresario = agendaIdEmpresarioDoUsuario($conexao, (int)$_SESSION['id']);
+    }
+    if ($idempresario === null) {
+        return false;
+    }
     $sql = "INSERT INTO mydb.servicos
-    (serv_nome, serv_valor, serv_descricao, serv_tempo, serv_fotos)
-    VALUES (?, ?, ?, ?,?)";
+    (serv_nome, serv_valor, serv_descricao, serv_tempo, serv_fotos, empresario_idempresario)
+    VALUES (?, ?, ?, ?, ?, ?)";
     $comando = mysqli_prepare($conexao, $sql);
-    mysqli_stmt_bind_param( $comando,'sdsss',$servico, $valor, $descricao, $tempo, $fotos);
+    mysqli_stmt_bind_param( $comando,'sdsssi',$servico, $valor, $descricao, $tempo, $fotos, $idempresario);
     $funcionou = mysqli_stmt_execute($comando);
     mysqli_stmt_close($comando);
     return $funcionou;
@@ -383,12 +421,22 @@ function agendaCodigoDia($data) {
 
 // ---------- profissionais e serviços ----------
 
-function agendaListarProfissionais($conexao) {
+// $cidade vazio = todos. Com texto: busca parcial, sem diferenciar maiúsculas/acentos ("goiania" acha "Goiânia").
+function agendaListarProfissionais($conexao, $cidade = '') {
+    $cidade = trim((string)$cidade);
     $sql = "SELECT e.idempresario, e.empre_tipo, e.empre_cidade, u.user_nome, u.user_fotos
             FROM empresario e
-            JOIN usuarios u ON u.idusuarios = e.usuarios_idusuarios
-            ORDER BY u.user_nome";
+            JOIN usuarios u ON u.idusuarios = e.usuarios_idusuarios";
+    if ($cidade !== '') {
+        $sql .= " WHERE e.empre_cidade LIKE ?";
+    }
+    $sql .= " ORDER BY u.user_nome";
+
     $comando = mysqli_prepare($conexao, $sql);
+    if ($cidade !== '') {
+        $padrao = '%' . addcslashes($cidade, '%_\\') . '%'; // % e _ digitados valem como texto comum
+        mysqli_stmt_bind_param($comando, 's', $padrao);
+    }
     mysqli_stmt_execute($comando);
     $resultado = mysqli_stmt_get_result($comando);
     $lista = [];
@@ -397,6 +445,19 @@ function agendaListarProfissionais($conexao) {
     }
     mysqli_stmt_close($comando);
     return $lista;
+}
+
+// Cidades que têm profissional (para as sugestões do filtro)
+function agendaListarCidades($conexao) {
+    $comando = mysqli_prepare($conexao, "SELECT DISTINCT empre_cidade FROM empresario WHERE empre_cidade <> '' ORDER BY empre_cidade");
+    mysqli_stmt_execute($comando);
+    $resultado = mysqli_stmt_get_result($comando);
+    $cidades = [];
+    while ($linha = mysqli_fetch_assoc($resultado)) {
+        $cidades[] = $linha['empre_cidade'];
+    }
+    mysqli_stmt_close($comando);
+    return $cidades;
 }
 
 function agendaBuscarProfissional($conexao, $idempresario) {
@@ -609,6 +670,7 @@ function agendaCriar($conexao, $idusuario, $idempresario, $idservico, $data, $ho
 
     } catch (Throwable $erro) {
         mysqli_rollback($conexao);
+        error_log('[Tesorly] agendaCriar: ' . $erro->getMessage());
         return agendaResultado(false, 'Não foi possível agendar agora. Tente novamente.');
     }
 }
@@ -829,7 +891,7 @@ function painelValidarHorarios($post) {
     return ['erro' => null, 'turnos' => $turnos, 'rotulos' => $rotulos];
 }
 
-// Troca TODOS os horários do empresário pelos novos (numa transação: ou grava tudo ou nada).
+// Troca TODOS os horários do empresário pelos novos (numa transação: ou grava tudo ou nada; se der erro, lança a exceção).
 // Agendamentos que já existem não são alterados.
 function painelSalvarHorarios($conexao, $idempresario, $turnos, $rotulos) {
     try {
@@ -864,7 +926,7 @@ function painelSalvarHorarios($conexao, $idempresario, $turnos, $rotulos) {
         return true;
     } catch (Throwable $erro) {
         mysqli_rollback($conexao);
-        return false;
+        throw $erro; // quem chamou mostra a mensagem (painelErroParaTela)
     }
 }
 
@@ -879,19 +941,37 @@ function painelOpcoesDuracao() {
     return $opcoes;
 }
 
-// Foto do serviço. Retorna: null (nenhum arquivo enviado) | false (arquivo inválido) | nome do arquivo salvo.
-// Aceita jpg, png e webp de até 2 MB; confere o conteúdo real da imagem, não só a extensão.
+// Confere a foto do serviço. Retorna null se estiver ok OU se nenhum arquivo foi enviado (a foto é opcional);
+// caso contrário, o texto do problema. Aceita jpg, png e webp de até 2 MB e confere o conteúdo real da imagem.
+function servicoValidarFoto($arquivo) {
+    if (!is_array($arquivo) || ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+        return null;
+    }
+    if ($arquivo['error'] === UPLOAD_ERR_INI_SIZE || $arquivo['error'] === UPLOAD_ERR_FORM_SIZE) {
+        return 'A foto é grande demais. O limite do servidor é ' . ini_get('upload_max_filesize') . '.';
+    }
+    if ($arquivo['error'] !== UPLOAD_ERR_OK) {
+        return 'Não foi possível enviar a foto (código ' . (int)$arquivo['error'] . '). Tente novamente.';
+    }
+    if ($arquivo['size'] > 2 * 1024 * 1024) {
+        return 'A foto é grande demais. O limite é 2 MB.';
+    }
+
+    $info = @getimagesize($arquivo['tmp_name']);
+    $tiposPermitidos = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP];
+    if (!$info || !in_array($info[2], $tiposPermitidos, true)) {
+        return 'A foto precisa ser JPG, PNG ou WEBP.';
+    }
+    return null;
+}
+
+// Salva a foto. Retorna: null (nenhum arquivo enviado) | false (não foi possível salvar) | nome do arquivo salvo.
+// Chame servicoValidarFoto() antes para ter a mensagem do motivo.
 function servicoUploadFoto($arquivo) {
     if (!is_array($arquivo) || ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
         return null;
     }
-    if ($arquivo['error'] !== UPLOAD_ERR_OK || $arquivo['size'] > 2 * 1024 * 1024) {
-        return false;
-    }
-
-    $info = @getimagesize($arquivo['tmp_name']);
-    $extensoes = [IMAGETYPE_JPEG => 'jpg', IMAGETYPE_PNG => 'png', IMAGETYPE_WEBP => 'webp'];
-    if (!$info || !isset($extensoes[$info[2]])) {
+    if (servicoValidarFoto($arquivo) !== null) {
         return false;
     }
 
@@ -900,11 +980,22 @@ function servicoUploadFoto($arquivo) {
         return false;
     }
 
+    $info = getimagesize($arquivo['tmp_name']);
+    $extensoes = [IMAGETYPE_JPEG => 'jpg', IMAGETYPE_PNG => 'png', IMAGETYPE_WEBP => 'webp'];
     $nome = 'serv_' . bin2hex(random_bytes(8)) . '.' . $extensoes[$info[2]];
     if (!move_uploaded_file($arquivo['tmp_name'], $pasta . $nome)) {
-        return false;
+        return false; // normalmente: o Apache não tem permissão de escrita em uploads/servicos
     }
     return $nome;
+}
+
+// Registra o erro técnico no log do servidor (docker compose logs) e devolve o texto para a tela.
+// Em localhost o texto inclui o detalhe do erro, para achar o problema; fora dele fica genérico.
+function painelErroParaTela($erro, $contexto) {
+    error_log('[Tesorly] ' . $contexto . ': ' . $erro->getMessage());
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    $local = (strpos($host, 'localhost') === 0 || strpos($host, '127.0.0.1') === 0);
+    return 'Não foi possível concluir agora.' . ($local ? ' Detalhe técnico: ' . $erro->getMessage() : ' Tente novamente.');
 }
 
 function servicoRemoverFoto($nome) {
@@ -1020,25 +1111,6 @@ function painelContagens($conexao, $idempresario) {
 
 
 // ---------- catálogo e lista de clientes ----------
-
-// Todos os serviços de todos os profissionais (página "Serviços disponíveis")
-function catalogoListarServicos($conexao) {
-    $sql = "SELECT s.idservicos, s.serv_nome, s.serv_valor, s.serv_descricao, s.serv_tempo, s.serv_fotos,
-                   e.idempresario, u.user_nome AS profissional
-            FROM servicos s
-            JOIN empresario e ON e.idempresario = s.empresario_idempresario
-            JOIN usuarios u ON u.idusuarios = e.usuarios_idusuarios
-            ORDER BY u.user_nome, s.serv_nome";
-    $comando = mysqli_prepare($conexao, $sql);
-    mysqli_stmt_execute($comando);
-    $resultado = mysqli_stmt_get_result($comando);
-    $lista = [];
-    while ($linha = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $linha;
-    }
-    mysqli_stmt_close($comando);
-    return $lista;
-}
 
 // Clientes que já agendaram com esse empresário (sem contar agendamentos cancelados).
 // Só nome e telefone: é o que o empresário precisa para entrar em contato.

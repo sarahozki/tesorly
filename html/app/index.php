@@ -22,17 +22,18 @@ if (!is_string($pagina)) {
 }
 
 // Páginas que todo mundo (cliente e empresário) pode abrir
-$paginasPermitidas = ['servicos', 'agenda', 'avalie', 'perfil', 'profissionais', 'profissional', 'editar_perfil'];
+$paginasPermitidas = ['agenda', 'avalie', 'perfil', 'profissionais', 'profissional', 'editar_perfil'];
 
-// Páginas SÓ do empresário (no menu ficam em "Área do profissional")
-$paginasEmpresario = ['meus_servicos', 'meus_horarios', 'clientes'];
+// Páginas SÓ do empresário (no menu ficam em "Área do profissional").
+// O cliente vê os serviços dentro do perfil do profissional.
+$paginasEmpresario = ['servicos', 'meus_servicos', 'meus_horarios', 'clientes'];
 
 if ($ehEmpresario) {
     $paginasPermitidas = array_merge($paginasPermitidas, $paginasEmpresario);
 }
 
 if (!in_array($pagina, $paginasPermitidas, true)) {
-    $pagina = 'servicos'; // se a página não existir (ou o cliente tentar abrir uma de empresário), cai no padrão
+    $pagina = 'agenda'; // página que não existe (ou cliente tentando abrir uma de empresário): cai na Agenda
 }
 
 $arquivoPagina = RAIZ . '/paginas/' . $pagina . '.php';

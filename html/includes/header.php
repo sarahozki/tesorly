@@ -4,7 +4,6 @@ $ehEmpresario = $ehEmpresario ?? false;
 
 // Menu de todo mundo (cliente e empresário)
 $menuGeral = [
-    'servicos'      => 'Serviços disponíveis',
     'agenda'        => 'Agenda',
     'avalie'        => 'Avalie',
     'perfil'        => 'Meu perfil',
@@ -13,13 +12,15 @@ $menuGeral = [
 
 // Menu SÓ do empresário (cliente não vê e não consegue abrir: o app/index.php também bloqueia)
 $menuEmpresario = [
-    'meus_servicos' => 'Meus serviços',
+    'servicos'      => 'Serviços disponíveis',
     'meus_horarios' => 'Meus horários',
     'clientes'      => 'Clientes',
 ];
 
-// o perfil de um profissional ("profissional") conta como "Profissionais" no menu
-$paginaMenu = ($pagina === 'profissional') ? 'profissionais' : $pagina;
+// páginas "filhas" destacam o item do menu a que pertencem
+$paginaMenu = $pagina;
+if ($pagina === 'profissional') { $paginaMenu = 'profissionais'; }   // perfil de um profissional
+if ($pagina === 'meus_servicos') { $paginaMenu = 'servicos'; }       // formulário de serviço
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
