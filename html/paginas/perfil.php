@@ -111,7 +111,7 @@ if (!$usuario) {
             </div>
         </div>
 
-        <button class="perfil_button" onclick="location.href='editar_perfil.php'" id="editar_perfil">Editar Perfil</button>
+       <button class="perfil_button" onclick="location.href='?pagina=editar_perfil'" id="editar_perfil">Editar Perfil</button>
         <button class="perfil_button" onclick="location.href='../comentarios/cad_coment.php'">Comentar</button>
     </div>
 

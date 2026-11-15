@@ -117,10 +117,29 @@ function salvaruser($conexao, $nome, $email, $senha, $telefone, $fotos) {
     return (int)$novo_id; // o cadastro do empresário (cad_emp.php) precisa desse ID
 }
 
-function editaruser($conexao, $nome, $email, $senha, $telefone, $fotos, $idusuarios){
-    $sql = "UPDATE usuarios SET nome=?, email=?, senha=?, telefone=?, fotos=? WHERE idusuarios=?";
+//verifica a senha do usuário, retorna true se a senha estiver correta, false caso contrário na hora de mudar
+function editaruser($conexao, $nome, $email, $telefone, $foto, $senhaHash, $idusuarios){
+    $sql = "UPDATE usuarios SET user_nome=?, user_email=?, user_telefone=?";
+    $tipos = 'sss';
+    $valores = [$nome, $email, $telefone];
+
+    if ($foto !== null) {
+        $sql .= ", user_fotos=?";
+        $tipos .= 's';
+        $valores[] = $foto;
+    }
+    if ($senhaHash !== null) {
+        $sql .= ", user_senha=?";
+        $tipos .= 's';
+        $valores[] = $senhaHash;
+    }
+
+    $sql .= " WHERE idusuarios=?";
+    $tipos .= 'i';
+    $valores[] = $idusuarios;
+
     $comando = mysqli_prepare($conexao, $sql);
-    mysqli_stmt_bind_param($comando, 'sssi', $nome, $email, $senha, $telefone, $fotos, $idusuarios);
+    mysqli_stmt_bind_param($comando, $tipos, ...$valores);
     $funcionou = mysqli_stmt_execute($comando);
     mysqli_stmt_close($comando);
     return $funcionou;
@@ -1134,37 +1153,10 @@ function agendaListarClientesDoEmpresario($conexao, $idempresario) {
     return $lista;
 }
 
-//--------------------VENDAS-----------------------//
-// ⡤⠒⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡤⠒⢤
-//⢣⡀⠀⠉⠲⢤⣀⡀⠀⠀⠀⠀⠀⠀⢀⣀⡤⠖⠉⠀⢀⡜
-//⢸⡉⠒⠄⠀⠀⠀⢉⡙⢢⠀⠀⡔⢋⡉⠀⠀⠀⠠⠒⢉⡇
-  //⠉⢖⠒⠀⠀⠀⣇⠀⣸⠀⠀⣇⠀⣸⠀⠀⠀⠒⡲⠉⠀
-    //⠉⠙⠫⠤⠚⠉⠀⠀⠀⠀⠉⠓⠤⠝⠋⠉ 
-
-//--------------------VENDAS-----------------------//
 
 
-function listarvenda($conexao) {
-    $sql = "SELECT * FROM tb_venda";
-    $comando = mysqli_prepare($conexao, $sql);
-    mysqli_stmt_execute($comando);
-    $resultado = mysqli_stmt_get_result($comando);
-    $listar_venda = [];
-    while ($venda = mysqli_fetch_assoc($resultado)) {
-        $listar_venda[] = $venda;
-    }
-    mysqli_stmt_close($comando);
-    return $listar_venda;
-}
 
-function salvarVenda($conexao, $idcliente, $idproduto, $valor_total, $data ){
-    $sql= "INSERT INTO tb_venda (idcliente, idproduto, valor_total, data) VALUES (?,?,?,?)";
-    $comando = mysqli_prepare($conexao, $sql);
-    mysqli_stmt_bind_param($comando, 'iids',$idcliente, $idproduto, $valor_total, $data);
-    $funcionou = mysqli_stmt_execute($comando);
-    mysqli_stmt_close($comando);
-    return $funcionou;
-};
+
 
 //--------------------LOGIN-----------------------//
 // ⡤⠒⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡤⠒⢤
