@@ -51,7 +51,6 @@
             <ul class="nav_list_index">
                 <li><a href="#home">Sobre o site</a></li>
                 <li><a href="#sarolau">Sobre Sarolau</a></li>
-                <li><a href="empresarios/cad_emp.php">Suporte</a></li>
             </ul>
         </nav>
 
@@ -191,7 +190,7 @@
                 <div class="founder_socials_index">
                     <a href="https://www.instagram.com/gabrielaa.sarah" target="_blank"><img src="./imagens/instagram.png" alt="Instagram"></a>
                     <a href="https://www.linkedin.com/in/sarah-gabriela" target="_blank"><img src="./imagens/linkedin.png" alt="LinkedIn"></a>
-                    <a href="https://github.com/kowakop" target="_blank"><img src="./imagens/github.png" alt="GitHub"></a>
+                    <a href="https://github.com/sarahozki" target="_blank"><img src="./imagens/github.png" alt="GitHub"></a>
                 </div>
             </div>
 
