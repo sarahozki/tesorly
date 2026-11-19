@@ -1,3 +1,20 @@
+<?php
+// Carrega avaliações reais se a conexão com o banco estiver disponível
+$comentariosIndex = [];
+if (file_exists(__DIR__ . '/conexao.php') && file_exists(__DIR__ . '/funcoes.php')) {
+    try {
+        @include_once __DIR__ . '/conexao.php';
+        @include_once __DIR__ . '/funcoes.php';
+        if (isset($conexao) && $conexao instanceof mysqli && !$conexao->connect_error) {
+            if (function_exists('listarcomentarios')) {
+                $comentariosIndex = listarcomentarios($conexao, 6);
+            }
+        }
+    } catch (Throwable $t) {
+        $comentariosIndex = [];
+    }
+}
+?>
 <!-- 
 ⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣶⡋⠉⠙⠒⢤⡀⠀⠀⠀⠀⠀⢠⠖⠉⠉⠙⠢⡄⠀
 ⠀⠀⠀⠀⠀⠀⢀⣼⣟⡒⠒⠀⠀⠀⠀⠀⠙⣆⠀⠀⠀⢠⠃⠀⠀  ⠀⠀⠹⡄
@@ -126,54 +143,71 @@
         <h2 class="comments_subtitle_index">Veja a opinião de pessoas que testaram e usaram nossa plataforma no dia a dia.</h2>
 
         <div class="comments_grid_index">
-            <div class="comment_card_index">
-                <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
-                <h3 class="comment_name_index">Poliana Silva</h3>
-                <h4 class="comment_role_index">Cliente</h4>
-                <p class="opn comment_text_index">Usei o site para agendar um horário no salão e achei tudo muito prático. Consegui escolher o serviço, ver os horários disponíveis e marcar em poucos minutos, sem complicação. Com certeza usaria novamente.</p>
-            </div>
+            <?php if (!empty($comentariosIndex)): ?>
+                <?php foreach ($comentariosIndex as $c): ?>
+                    <?php
+                        $foto = !empty($c['user_fotos']) ? './uploads/usuarios/' . htmlspecialchars($c['user_fotos']) : './imagens/fotouser.png';
+                        $estrelas = max(1, min(5, (int)$c['comentarios_estrela']));
+                    ?>
+                    <div class="comment_card_index">
+                        <img src="<?= $foto ?>" alt="Foto de <?= htmlspecialchars($c['user_nome']) ?>" class="comment_avatar_index" onerror="this.onerror=null;this.src='./imagens/fotouser.png';">
+                        <h3 class="comment_name_index"><?= htmlspecialchars($c['user_nome']) ?></h3>
+                        <h4 class="comment_role_index" style="color: #F5A623; letter-spacing: 2px;">
+                            <?= str_repeat('★', $estrelas) . str_repeat('☆', 5 - $estrelas) ?>
+                        </h4>
+                        <p class="opn comment_text_index"><?= nl2br(htmlspecialchars($c['coment_texto'])) ?></p>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="comment_card_index">
+                    <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
+                    <h3 class="comment_name_index">Poliana Silva</h3>
+                    <h4 class="comment_role_index">Cliente</h4>
+                    <p class="opn comment_text_index">Usei o site para agendar um horário no salão e achei tudo muito prático. Consegui escolher o serviço, ver os horários disponíveis e marcar em poucos minutos, sem complicação. Com certeza usaria novamente.</p>
+                </div>
 
-            <div class="comment_card_index">
-                <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
-                <h3 class="comment_name_index">Fabiano Ferraz</h3>
-                <h4 class="comment_role_index">Cliente</h4>
-                <p class="opn comment_text_index">Como cliente, achei muito útil poder ver os serviços e preços antes de marcar. Isso passa mais confiança e ajuda na escolha do que realmente quero fazer.</p>
-            </div>
+                <div class="comment_card_index">
+                    <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
+                    <h3 class="comment_name_index">Fabiano Ferraz</h3>
+                    <h4 class="comment_role_index">Cliente</h4>
+                    <p class="opn comment_text_index">Como cliente, achei muito útil poder ver os serviços e preços antes de marcar. Isso passa mais confiança e ajuda na escolha do que realmente quero fazer.</p>
+                </div>
 
-            <div class="comment_card_index">
-                <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
-                <h3 class="comment_name_index">Tereza Santes</h3>
-                <h4 class="comment_role_index">Cliente</h4>
-                <p class="opn comment_text_index">O sistema de catálogo também é um ponto positivo, já que permite apresentar os serviços de maneira clara, ajudando o cliente a entender melhor o que está sendo oferecido.</p>
-            </div>
+                <div class="comment_card_index">
+                    <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
+                    <h3 class="comment_name_index">Tereza Santes</h3>
+                    <h4 class="comment_role_index">Cliente</h4>
+                    <p class="opn comment_text_index">O sistema de catálogo também é um ponto positivo, já que permite apresentar os serviços de maneira clara, ajudando o cliente a entender melhor o que está sendo oferecido.</p>
+                </div>
 
-            <div class="comment_card_index">
-                <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
-                <h3 class="comment_name_index">Ricardo Tomaz</h3>
-                <h4 class="comment_role_index">Cliente</h4>
-                <p class="opn comment_text_index">Gostei muito da experiência como cliente. O catálogo de serviços é bem organizado e ajuda bastante na hora de decidir o que fazer. Tudo é claro e fácil de navegar.</p>
-            </div>
+                <div class="comment_card_index">
+                    <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
+                    <h3 class="comment_name_index">Ricardo Tomaz</h3>
+                    <h4 class="comment_role_index">Cliente</h4>
+                    <p class="opn comment_text_index">Gostei muito da experiência como cliente. O catálogo de serviços é bem organizado e ajuda bastante na hora de decidir o que fazer. Tudo é claro e fácil de navegar.</p>
+                </div>
 
-            <div class="comment_card_index">
-                <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
-                <h3 class="comment_name_index">Mariana Teles</h3>
-                <h4 class="comment_role_index">Profissional</h4>
-                <p class="opn comment_text_index">Sou profissional da área e vejo esse tipo de sistema como algo essencial hoje em dia. Ter agenda, serviços e divulgação em um só lugar facilita muito a rotina e melhora o atendimento ao cliente.</p>
-            </div>
+                <div class="comment_card_index">
+                    <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
+                    <h3 class="comment_name_index">Mariana Teles</h3>
+                    <h4 class="comment_role_index">Profissional</h4>
+                    <p class="opn comment_text_index">Sou profissional da área e vejo esse tipo de sistema como algo essencial hoje em dia. Ter agenda, serviços e divulgação em um só lugar facilita muito a rotina e melhora o atendimento ao cliente.</p>
+                </div>
 
-            <div class="comment_card_index">
-                <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
-                <h3 class="comment_name_index">Sônia Tavares</h3>
-                <h4 class="comment_role_index">Profissional</h4>
-                <p class="opn comment_text_index">Do ponto de vista profissional, é uma solução que traz mais praticidade no dia a dia e melhora a forma como os serviços podem ser apresentados ao público.</p>
-            </div>
+                <div class="comment_card_index">
+                    <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
+                    <h3 class="comment_name_index">Sônia Tavares</h3>
+                    <h4 class="comment_role_index">Profissional</h4>
+                    <p class="opn comment_text_index">Do ponto de vista profissional, é uma solução que traz mais praticidade no dia a dia e melhora a forma como os serviços podem ser apresentados ao público.</p>
+                </div>
 
-            <div class="comment_card_index">
-                <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
-                <h3 class="comment_name_index">Roberto Pereira</h3>
-                <h4 class="comment_role_index">Profissional</h4>
-                <p class="opn comment_text_index">O site ajudou na organização da minha agenda e facilitou o controle dos horários e serviços, deixando tudo mais prático no dia a dia.</p>
-            </div>
+                <div class="comment_card_index">
+                    <img src="./imagens/fotouser.png" alt="fotouser" class="comment_avatar_index">
+                    <h3 class="comment_name_index">Roberto Pereira</h3>
+                    <h4 class="comment_role_index">Profissional</h4>
+                    <p class="opn comment_text_index">O site ajudou na organização da minha agenda e facilitou o controle dos horários e serviços, deixando tudo mais prático no dia a dia.</p>
+                </div>
+            <?php endif; ?>
         </div>
     </section>
 

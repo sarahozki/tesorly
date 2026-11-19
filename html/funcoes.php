@@ -1266,46 +1266,157 @@ function logout(){
 
 //--------------------comentarios-----------------------//
 
+/**
+ * Salva um novo comentário/avaliação.
+ * Suporta assinaturas flexíveis para compatibilidade:
+ * salvarcomentarios($conexao, $texto, $idusuario, $estrela = 5)
+ */
+function salvarcomentarios($conexao, $coment_texto, $coment_idusuarios, $comentarios_estrela = 5) {
+    // Compatibilidade caso parâmetros tenham sido invertidos
+    if ($coment_idusuarios <= 5 && is_numeric($comentarios_estrela) && (int)$comentarios_estrela > 5) {
+        $temp = $coment_idusuarios;
+        $coment_idusuarios = (int)$comentarios_estrela;
+        $comentarios_estrela = $temp;
+    }
 
-function deletarcomentarios($conexao, $idcomentarios) {
-    $sql = "DELETE FROM comentarios WHERE idcomentarios = ?";
+    $coment_texto = trim((string)$coment_texto);
+    $idusuario = (int)$coment_idusuarios;
+    $estrela = (int)$comentarios_estrela;
+
+    if ($coment_texto === '' || $idusuario <= 0) {
+        return false;
+    }
+
+    if ($estrela < 1) $estrela = 1;
+    if ($estrela > 5) $estrela = 5;
+
+    $sql = "INSERT INTO comentarios (coment_texto, coment_idusuarios, comentarios_estrela) VALUES (?, ?, ?)";
     $comando = mysqli_prepare($conexao, $sql);
-    mysqli_stmt_bind_param($comando, 'i', $idcomentarios);
+    if (!$comando) {
+        return false;
+    }
+    mysqli_stmt_bind_param($comando, 'sii', $coment_texto, $idusuario, $estrela);
     $funcionou = mysqli_stmt_execute($comando);
     mysqli_stmt_close($comando);
-    return $funcionou; //true ou false
-};
+    return $funcionou;
+}
 
-function listarcomentarios($conexao) {
-    $sql = "SELECT * FROM comentarios";
+/**
+ * Lista comentários cadastrados com os dados do usuário autor.
+ */
+function listarcomentarios($conexao, $limite = null) {
+    $sql = "SELECT c.idcomentarios, c.coment_texto, c.coment_idusuarios, c.comentarios_estrela,
+                   u.user_nome, u.user_fotos, u.user_email
+            FROM comentarios c
+            INNER JOIN usuarios u ON c.coment_idusuarios = u.idusuarios
+            ORDER BY c.idcomentarios DESC";
+
+    if ($limite !== null && (int)$limite > 0) {
+        $sql .= " LIMIT " . (int)$limite;
+    }
+
     $comando = mysqli_prepare($conexao, $sql);
+    if (!$comando) {
+        return [];
+    }
     mysqli_stmt_execute($comando);
     $resultado = mysqli_stmt_get_result($comando);
     $lista_comentarios = [];
-    while ($comentarios = mysqli_fetch_assoc($resultado)) {
-        $lista_comentarios[] = $comentarios;
+    if ($resultado) {
+        while ($comentarios = mysqli_fetch_assoc($resultado)) {
+            $lista_comentarios[] = $comentarios;
+        }
     }
     mysqli_stmt_close($comando);
     return $lista_comentarios;
-};
+}
 
-function salvarcomentarios($conexao, $coment_texto, $comentarios_estrela) {
-    $sql = "INSERT INTO comentarios (coment_texto, comentarios_estrela) VALUES (?, ?)";
-    $comando = mysqli_prepare($conexao, $sql);
-    mysqli_stmt_bind_param($comando,'si', $coment_texto, $comentarios_estrela);
+/**
+ * Deleta comentário por ID, opcionalmente validando se pertence ao usuário logado.
+ */
+function deletarcomentarios($conexao, $idcomentarios, $idUsuarioLogado = null) {
+    $idcomentarios = (int)$idcomentarios;
+    if ($idcomentarios <= 0) {
+        return false;
+    }
+
+    if ($idUsuarioLogado !== null && (int)$idUsuarioLogado > 0) {
+        $sql = "DELETE FROM comentarios WHERE idcomentarios = ? AND coment_idusuarios = ?";
+        $comando = mysqli_prepare($conexao, $sql);
+        if (!$comando) return false;
+        $idUser = (int)$idUsuarioLogado;
+        mysqli_stmt_bind_param($comando, 'ii', $idcomentarios, $idUser);
+    } else {
+        $sql = "DELETE FROM comentarios WHERE idcomentarios = ?";
+        $comando = mysqli_prepare($conexao, $sql);
+        if (!$comando) return false;
+        mysqli_stmt_bind_param($comando, 'i', $idcomentarios);
+    }
+
     $funcionou = mysqli_stmt_execute($comando);
     mysqli_stmt_close($comando);
     return $funcionou;
-};
+}
 
-function editarcomentarios($conexao, $coment_texto, $coment_idusuarios, $comentarios_estrela,$idcomentarios) {
-    $sql = "UPDATE comentarios SET texto=?, idusuarios=?, estrela=?, WHERE idcomentarios=?";
-    $comando = mysqli_prepare($conexao, $sql);
-    mysqli_stmt_bind_param($comando,'sii', $coment_texto, $coment_idusuarios, $comentarios_estrela, $idcomentarios);
+/**
+ * Atualiza um comentário existente.
+ */
+function editarcomentarios($conexao, $coment_texto, $comentarios_estrela, $idcomentarios, $coment_idusuarios = null) {
+    $coment_texto = trim((string)$coment_texto);
+    $estrela = (int)$comentarios_estrela;
+    if ($estrela < 1) $estrela = 1;
+    if ($estrela > 5) $estrela = 5;
+    $idcomentarios = (int)$idcomentarios;
+
+    if ($coment_idusuarios !== null && (int)$coment_idusuarios > 0) {
+        $sql = "UPDATE comentarios SET coment_texto = ?, comentarios_estrela = ? WHERE idcomentarios = ? AND coment_idusuarios = ?";
+        $comando = mysqli_prepare($conexao, $sql);
+        if (!$comando) return false;
+        $idUser = (int)$coment_idusuarios;
+        mysqli_stmt_bind_param($comando, 'siii', $coment_texto, $estrela, $idcomentarios, $idUser);
+    } else {
+        $sql = "UPDATE comentarios SET coment_texto = ?, comentarios_estrela = ? WHERE idcomentarios = ?";
+        $comando = mysqli_prepare($conexao, $sql);
+        if (!$comando) return false;
+        mysqli_stmt_bind_param($comando, 'sii', $coment_texto, $estrela, $idcomentarios);
+    }
+
     $funcionou = mysqli_stmt_execute($comando);
     mysqli_stmt_close($comando);
     return $funcionou;
-};
+}
 
+/**
+ * Retorna estatísticas das avaliações (total, média e distribuição por estrela).
+ */
+function obterEstatisticasComentarios($conexao) {
+    $sql = "SELECT 
+                COUNT(*) as total,
+                COALESCE(AVG(comentarios_estrela), 5) as media,
+                SUM(CASE WHEN comentarios_estrela = 5 THEN 1 ELSE 0 END) as estrelas_5,
+                SUM(CASE WHEN comentarios_estrela = 4 THEN 1 ELSE 0 END) as estrelas_4,
+                SUM(CASE WHEN comentarios_estrela = 3 THEN 1 ELSE 0 END) as estrelas_3,
+                SUM(CASE WHEN comentarios_estrela = 2 THEN 1 ELSE 0 END) as estrelas_2,
+                SUM(CASE WHEN comentarios_estrela = 1 THEN 1 ELSE 0 END) as estrelas_1
+            FROM comentarios";
+    $resultado = mysqli_query($conexao, $sql);
+    if ($resultado && $linha = mysqli_fetch_assoc($resultado)) {
+        $total = (int)$linha['total'];
+        $media = $total > 0 ? round((float)$linha['media'], 1) : 5.0;
+        return [
+            'total'      => $total,
+            'media'      => $media,
+            'estrelas_5' => (int)$linha['estrelas_5'],
+            'estrelas_4' => (int)$linha['estrelas_4'],
+            'estrelas_3' => (int)$linha['estrelas_3'],
+            'estrelas_2' => (int)$linha['estrelas_2'],
+            'estrelas_1' => (int)$linha['estrelas_1'],
+        ];
+    }
+    return [
+        'total' => 0, 'media' => 5.0,
+        'estrelas_5' => 0, 'estrelas_4' => 0, 'estrelas_3' => 0, 'estrelas_2' => 0, 'estrelas_1' => 0
+    ];
+}
 
 ?>

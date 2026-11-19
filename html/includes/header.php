@@ -26,8 +26,8 @@ if ($pagina === 'meus_servicos') { $paginaMenu = 'servicos'; }       // formulá
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/agenda.css">
+    <link rel="stylesheet" href="../css/style.css?v=<?= file_exists(RAIZ . '/css/style.css') ? filemtime(RAIZ . '/css/style.css') : 1 ?>">
+    <link rel="stylesheet" href="../css/agenda.css?v=<?= file_exists(RAIZ . '/css/agenda.css') ? filemtime(RAIZ . '/css/agenda.css') : 1 ?>">
     <title>Tesorly</title>
 </head>
 <body>

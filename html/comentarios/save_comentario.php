@@ -1,41 +1,62 @@
 <?php
+ob_start();
 session_start();
-require_once '../conexao.php';
-require_once '../funcoes.php';
+require_once __DIR__ . '/../conexao.php';
+require_once __DIR__ . '/../funcoes.php';
+
 verificarLogin();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /comentarios/cad_coment.php');
+    header('Location: ../app/index.php?pagina=avalie');
     exit;
 }
 
-$coment_texto = trim($_POST['coment_text'] ?? '');
-$coment_idusuarios = $_SESSION['id_usuario'] ?? null;
-$comentarios_estrela = $_POST['comentarios_estrela'] ?? null;
-
-if ($coment_texto === '' || !$coment_idusuarios) {
-    die('Dados inválidos ou usuário não autenticado.');
+if (!csrfValido($_POST['csrf'] ?? '')) {
+    painelFlashDefinir('erro', 'Sessão expirada. Por favor, tente novamente.');
+    header('Location: ../app/index.php?pagina=avalie');
+    exit;
 }
 
-$sql = "INSERT INTO comentarios
-(coment_text, coment_idusuarios, comentarios_estrela)
-VALUES (?, ?, ?)";
+$idUsuario = (int)($_SESSION['id'] ?? $_SESSION['id_usuario'] ?? 0);
+$acao = $_POST['acao'] ?? 'criar';
 
-$comando = mysqli_prepare($conexao, $sql);
+if ($acao === 'excluir') {
+    $idcomentarios = (int)($_POST['idcomentarios'] ?? 0);
+    if ($idcomentarios > 0 && deletarcomentarios($conexao, $idcomentarios, $idUsuario)) {
+        painelFlashDefinir('ok', 'Avaliação excluída com sucesso.');
+    } else {
+        painelFlashDefinir('erro', 'Erro ao excluir avaliação ou você não tem permissão.');
+    }
+    header('Location: ../app/index.php?pagina=avalie');
+    exit;
+}
 
-mysqli_stmt_bind_param(
-    $comando,
-    "sii",
-    $coment_texto,
-    $coment_idusuarios,
-    $comentarios_estrela
-);
+$coment_texto = trim($_POST['coment_texto'] ?? $_POST['coment_text'] ?? '');
+$comentarios_estrela = (int)($_POST['comentarios_estrela'] ?? 5);
 
-if (mysqli_stmt_execute($comando)) {
-    echo "Comentário publicado com sucesso!";
+if ($coment_texto === '' || $idUsuario <= 0) {
+    painelFlashDefinir('erro', 'Por favor, escreva um comentário antes de enviar.');
+    header('Location: ../app/index.php?pagina=avalie');
+    exit;
+}
+
+if (mb_strlen($coment_texto) > 255) {
+    painelFlashDefinir('erro', 'O comentário não pode ter mais de 255 caracteres.');
+    header('Location: ../app/index.php?pagina=avalie');
+    exit;
+}
+
+if ($comentarios_estrela < 1 || $comentarios_estrela > 5) {
+    $comentarios_estrela = 5;
+}
+
+$sucesso = salvarcomentarios($conexao, $coment_texto, $idUsuario, $comentarios_estrela);
+
+if ($sucesso) {
+    painelFlashDefinir('ok', 'Avaliação publicada com sucesso! Obrigado pelo seu feedback.');
 } else {
-    echo "Erro: " . mysqli_error($conexao);
+    painelFlashDefinir('erro', 'Erro ao salvar avaliação. Tente novamente.');
 }
 
-mysqli_stmt_close($comando);
-mysqli_close($conexao);
+header('Location: ../app/index.php?pagina=avalie');
+exit;
