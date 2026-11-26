@@ -423,6 +423,30 @@ function editarempresario($conexao, $empre_tipo, $empre_dias_trab, $cidade, $ide
 };
 
 
+function agendaColunaNichoExiste($conexao) {
+    static $existe = null;
+    if ($existe !== null) {
+        return $existe;
+    }
+    try {
+        $resultado = @mysqli_query($conexao, "SHOW COLUMNS FROM empresario LIKE 'empre_nicho'");
+        if ($resultado && mysqli_num_rows($resultado) > 0) {
+            $existe = true;
+            return true;
+        }
+        // Se a coluna ainda não existir no MySQL do usuário, tenta adicionar automaticamente
+        $alterou = @mysqli_query($conexao, "ALTER TABLE empresario ADD COLUMN empre_nicho VARCHAR(50) NOT NULL DEFAULT 'cabeleireiro' AFTER empre_tipo");
+        if ($alterou) {
+            $existe = true;
+            return true;
+        }
+    } catch (Throwable $e) {
+        // Silencioso se o usuário do banco não tiver permissão de ALTER TABLE
+    }
+    $existe = false;
+    return false;
+}
+
 function salvarempresario($conexao, $usuarios_idusuarios, $empre_tipo, $cidade, $dias_trab = 'A definir', $empre_nicho = null) {
     // Compatibilidade caso parâmetros sejam passados na ordem antiga: ($conexao, $id, $tipo, $dias_trab, $cidade)
     if (func_num_args() >= 5 && is_string($dias_trab) && !empty($dias_trab) && $dias_trab !== 'A definir' && $cidade === 'A definir') {
@@ -442,28 +466,38 @@ function salvarempresario($conexao, $usuarios_idusuarios, $empre_tipo, $cidade, 
         $empre_nicho = agendaNormalizarNicho($empre_nicho);
     }
 
-    // 1. Tenta salvar na tabela incluindo empre_nicho
-    $sqlComNicho = "INSERT INTO empresario (usuarios_idusuarios, empre_tipo, empre_nicho, empre_dias_trab, empre_cidade) VALUES (?, ?, ?, ?, ?)";
-    $comando = @mysqli_prepare($conexao, $sqlComNicho);
-    if ($comando) {
-        mysqli_stmt_bind_param($comando, 'issss', $usuarios_idusuarios, $empre_tipo, $empre_nicho, $dias_trab, $cidade);
-        $funcionou = @mysqli_stmt_execute($comando);
-        mysqli_stmt_close($comando);
-        if ($funcionou) {
-            return true;
+    // 1. Se a coluna empre_nicho existir (ou tiver sido criada com sucesso), insere com ela
+    if (agendaColunaNichoExiste($conexao)) {
+        try {
+            $sqlComNicho = "INSERT INTO empresario (usuarios_idusuarios, empre_tipo, empre_nicho, empre_dias_trab, empre_cidade) VALUES (?, ?, ?, ?, ?)";
+            $comando = mysqli_prepare($conexao, $sqlComNicho);
+            if ($comando) {
+                mysqli_stmt_bind_param($comando, 'issss', $usuarios_idusuarios, $empre_tipo, $empre_nicho, $dias_trab, $cidade);
+                $funcionou = mysqli_stmt_execute($comando);
+                mysqli_stmt_close($comando);
+                if ($funcionou) {
+                    return true;
+                }
+            }
+        } catch (Throwable $e) {
+            // Em caso de qualquer erro no SQL com nicho, segue para o fallback seguro
         }
     }
 
-    // 2. Fallback caso a tabela ainda não contenha a coluna empre_nicho
-    $sqlSemNicho = "INSERT INTO empresario (usuarios_idusuarios, empre_tipo, empre_dias_trab, empre_cidade) VALUES (?, ?, ?, ?)";
-    $comando = mysqli_prepare($conexao, $sqlSemNicho);
-    if (!$comando) {
+    // 2. Fallback seguro caso a coluna empre_nicho ainda não exista no banco
+    try {
+        $sqlSemNicho = "INSERT INTO empresario (usuarios_idusuarios, empre_tipo, empre_dias_trab, empre_cidade) VALUES (?, ?, ?, ?)";
+        $comando = mysqli_prepare($conexao, $sqlSemNicho);
+        if (!$comando) {
+            return false;
+        }
+        mysqli_stmt_bind_param($comando, 'isss', $usuarios_idusuarios, $empre_tipo, $dias_trab, $cidade);
+        $funcionou = mysqli_stmt_execute($comando);
+        mysqli_stmt_close($comando);
+        return $funcionou;
+    } catch (Throwable $e) {
         return false;
     }
-    mysqli_stmt_bind_param($comando, 'isss', $usuarios_idusuarios, $empre_tipo, $dias_trab, $cidade);
-    $funcionou = mysqli_stmt_execute($comando);
-    mysqli_stmt_close($comando);
-    return $funcionou;
 }
 
 
