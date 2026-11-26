@@ -64,8 +64,8 @@ if (!empty($usuario['user_fotos'])) {
     top: 0;
     left: 0;
     right: 0;
-    height: 8px;
-    background: linear-gradient(90deg, #6B2F5C 0%, #D6336C 50%, #F5B82A 100%);
+    height: 3px;
+    background: var(--cor-destaque, #6B2F5C);
 }
 
 /* Avatar com borda decorativa */
@@ -328,11 +328,11 @@ if (!empty($usuario['user_fotos'])) {
             <h1 class="perfil_nome_usuario"><?= htmlspecialchars($usuario['user_nome']) ?></h1>
             <div class="perfil_tags_linha">
                 <?php if ($ehEmpresario): ?>
-                    <span class="badge_perfil_tipo badge_tipo_prof">✿ Profissional / Salão</span>
+                    <span class="badge_perfil_tipo badge_tipo_prof">Profissional</span>
                 <?php else: ?>
-                    <span class="badge_perfil_tipo badge_tipo_cliente">✿ Cliente</span>
+                    <span class="badge_perfil_tipo badge_tipo_cliente">Cliente</span>
                 <?php endif; ?>
-                <span class="badge_status_ativo">✓ Conta Verificada</span>
+                <span class="badge_status_ativo">Verificado</span>
             </div>
         </div>
     </div>
@@ -341,7 +341,9 @@ if (!empty($usuario['user_fotos'])) {
     <div class="perfil_grid_dados">
         <!-- E-mail -->
         <div class="card_dado_item">
-            <div class="icone_dado_box">✉</div>
+            <div class="icone_dado_box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
             <div class="texto_dado_box">
                 <span class="label_dado">E-mail Cadastrado</span>
                 <span class="valor_dado"><?= htmlspecialchars($usuario['user_email']) ?></span>
@@ -350,7 +352,9 @@ if (!empty($usuario['user_fotos'])) {
 
         <!-- Telefone -->
         <div class="card_dado_item">
-            <div class="icone_dado_box">📞</div>
+            <div class="icone_dado_box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
             <div class="texto_dado_box">
                 <span class="label_dado">Telefone / WhatsApp</span>
                 <span class="valor_dado"><?= htmlspecialchars($usuario['user_telefone'] ?: 'Não informado') ?></span>
@@ -358,18 +362,28 @@ if (!empty($usuario['user_fotos'])) {
         </div>
 
         <?php if ($ehEmpresario && $dadosEmpresario): ?>
-            <!-- Especialidade -->
+            <?php
+                $nichoMeu = agendaObterNicho($dadosEmpresario);
+                $infoMeu = agendaInfoNicho($nichoMeu);
+            ?>
+            <!-- Segmento / Nicho -->
             <div class="card_dado_item">
-                <div class="icone_dado_box">✂️</div>
+                <div class="icone_dado_box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                </div>
                 <div class="texto_dado_box">
-                    <span class="label_dado">Especialidade / Ramo</span>
-                    <span class="valor_dado"><?= htmlspecialchars($dadosEmpresario['empre_tipo'] ?? 'Salão de Beleza') ?></span>
+                    <span class="label_dado">Segmento de Atuação</span>
+                    <span class="valor_dado">
+                        <?= htmlspecialchars($dadosEmpresario['empre_tipo'] ?? $infoMeu['nome']) ?>
+                    </span>
                 </div>
             </div>
 
             <!-- Cidade -->
             <div class="card_dado_item">
-                <div class="icone_dado_box">📍</div>
+                <div class="icone_dado_box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </div>
                 <div class="texto_dado_box">
                     <span class="label_dado">Cidade de Atendimento</span>
                     <span class="valor_dado"><?= htmlspecialchars($dadosEmpresario['empre_cidade'] ?? 'Não informada') ?></span>
@@ -378,7 +392,9 @@ if (!empty($usuario['user_fotos'])) {
         <?php else: ?>
             <!-- Segurança -->
             <div class="card_dado_item">
-                <div class="icone_dado_box">🔒</div>
+                <div class="icone_dado_box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
                 <div class="texto_dado_box">
                     <span class="label_dado">Segurança da Conta</span>
                     <span class="valor_dado">Senha criptografada</span>
@@ -398,24 +414,24 @@ if (!empty($usuario['user_fotos'])) {
 
     <!-- Card de Ações Rápidas -->
     <div class="card_acoes_perfil">
-        <h3 class="titulo_acoes_perfil">⚡ Ações e Configurações</h3>
+        <h3 class="titulo_acoes_perfil">Ações da conta</h3>
         <div class="grupo_botoes_perfil">
             <a href="?pagina=editar_perfil" class="btn_perfil_acao btn_perfil_primario" id="btn_editar_perfil">
-                ✏️ Editar Meus Dados
+                Editar dados
             </a>
 
             <a href="?pagina=avalie" class="btn_perfil_acao btn_perfil_secundario">
-                ⭐ Avaliar e Ver Comentários
+                Avaliações e comentários
             </a>
 
             <?php if ($ehEmpresario): ?>
                 <a href="?pagina=meus_servicos" class="btn_perfil_acao btn_perfil_secundario">
-                    💼 Gerenciar Serviços
+                    Gerenciar serviços
                 </a>
             <?php endif; ?>
 
             <a href="../deslogar.php" class="btn_perfil_acao btn_perfil_perigo" onclick="return confirm('Deseja realmente sair da sua conta?');">
-                🚪 Sair da Conta
+                Sair da conta
             </a>
         </div>
     </div>

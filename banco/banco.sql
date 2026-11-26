@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`empresario` (
   `idempresario` INT NOT NULL AUTO_INCREMENT,
   `usuarios_idusuarios` INT NOT NULL,
   `empre_tipo` VARCHAR(255) NOT NULL,
-  `empre_dias_trab` VARCHAR(255) NOT NULL,
+  `empre_nicho` VARCHAR(50) NOT NULL DEFAULT 'cabeleireiro',
+  `empre_dias_trab` VARCHAR(255) NOT NULL DEFAULT 'A definir',
   `empre_cidade` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`idempresario`),
 

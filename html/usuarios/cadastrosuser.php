@@ -453,7 +453,7 @@
             <label for="senha" class="label-cadastro">Senha:</label>
             <div class="senha_wrap">
                 <input type="password" id="senha" name="senha" class="input-cadastro" placeholder="Crie uma senha forte" required autocomplete="new-password">
-                <button type="button" id="btn_toggle_senha" class="btn_toggle_senha" aria-label="Mostrar ou ocultar senha">👁</button>
+                <button type="button" id="btn_toggle_senha" class="btn_toggle_senha" aria-label="Mostrar ou ocultar senha">Mostrar</button>
             </div>
         </div>
 
@@ -527,7 +527,7 @@
         btnToggleSenha.addEventListener('click', function () {
             const ehPassword = campoSenha.type === 'password';
             campoSenha.type = ehPassword ? 'text' : 'password';
-            btnToggleSenha.textContent = ehPassword ? '🔒' : '👁';
+            btnToggleSenha.textContent = ehPassword ? 'Ocultar' : 'Mostrar';
         });
 
         // ==========================================
@@ -607,14 +607,14 @@
             }
 
             if (ehValido) {
-                msgEmail.className = 'msg_campo ativa sucesso';
-                msgEmail.textContent = '✓ E-mail válido';
+                msgEmail.className = 'msg_campo';
+                msgEmail.textContent = '';
                 campoEmail.classList.remove('invalido');
                 campoEmail.classList.add('valido');
                 return true;
             } else {
                 msgEmail.className = 'msg_campo ativa erro';
-                msgEmail.textContent = '✕ Digite um e-mail válido (ex: seu@email.com)';
+                msgEmail.textContent = 'Digite um e-mail válido';
                 campoEmail.classList.remove('valido');
                 campoEmail.classList.add('invalido');
                 return false;
@@ -639,14 +639,14 @@
             }
 
             if (ehValido) {
-                msgNome.className = 'msg_campo ativa sucesso';
-                msgNome.textContent = '✓ Nome válido';
+                msgNome.className = 'msg_campo';
+                msgNome.textContent = '';
                 campoNome.classList.remove('invalido');
                 campoNome.classList.add('valido');
                 return true;
             } else {
                 msgNome.className = 'msg_campo ativa erro';
-                msgNome.textContent = '✕ Digite seu nome e sobrenome';
+                msgNome.textContent = 'Digite seu nome e sobrenome';
                 campoNome.classList.remove('valido');
                 campoNome.classList.add('invalido');
                 return false;
@@ -690,14 +690,14 @@
             }
 
             if (ehValido) {
-                msgTel.className = 'msg_campo ativa sucesso';
-                msgTel.textContent = '✓ Telefone válido';
+                msgTel.className = 'msg_campo';
+                msgTel.textContent = '';
                 campoTel.classList.remove('invalido');
                 campoTel.classList.add('valido');
                 return true;
             } else {
                 msgTel.className = 'msg_campo ativa erro';
-                msgTel.textContent = '✕ Digite o DDD e número (10 ou 11 dígitos)';
+                msgTel.textContent = 'Digite o DDD e o número completo';
                 campoTel.classList.remove('valido');
                 campoTel.classList.add('invalido');
                 return false;

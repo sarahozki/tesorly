@@ -18,6 +18,8 @@ if (!$profissional) {
 $servicos   = agendaServicosDoProfissional($conexao, $idempresario);
 $expediente = agendaExpediente($conexao, $idempresario);
 $foto = !empty($profissional['user_fotos']) ? '../uploads/usuarios/' . $profissional['user_fotos'] : '../imagens/fotouser.png';
+$nichoProf = agendaObterNicho($profissional);
+$infoProf = agendaInfoNicho($nichoProf);
 
 $nomesDia = ['dom' => 'Dom', 'seg' => 'Seg', 'ter' => 'Ter', 'qua' => 'Qua', 'qui' => 'Qui', 'sex' => 'Sex', 'sab' => 'Sáb'];
 $nomesMes = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
@@ -29,8 +31,13 @@ $nomesMes = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out
     <div class="card_agenda cabecalho_prof_agenda">
         <img class="foto_prof_agenda" src="<?= htmlspecialchars($foto) ?>" alt="Foto de <?= htmlspecialchars($profissional['user_nome']) ?>">
         <div>
-            <h2><?= htmlspecialchars($profissional['user_nome']) ?></h2>
-            <p class="sub_agenda"><?= htmlspecialchars($profissional['empre_tipo']) ?> · <?= htmlspecialchars($profissional['empre_cidade']) ?></p>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <h2><?= htmlspecialchars($profissional['user_nome']) ?></h2>
+                <span class="badge_nicho_card badge_nicho_<?= $nichoProf ?>">
+                    <?= htmlspecialchars($infoProf['nome']) ?>
+                </span>
+            </div>
+            <p class="sub_agenda"><?= htmlspecialchars($profissional['empre_tipo'] ?? $infoProf['nome']) ?> · <?= htmlspecialchars($profissional['empre_cidade']) ?></p>
         </div>
         <a class="link_voltar_agenda" href="?pagina=profissionais">← Profissionais</a>
     </div>

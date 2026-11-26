@@ -277,6 +277,111 @@ function editarservicos($conexao, $nome, $valor, $descricao, $tempo, $fotos, $ag
 };
 
 
+//--------------------NICHOS E TEMAS DO APP-----------------------//
+
+function agendaListarNichos() {
+    return [
+        'cabeleireiro' => [
+            'slug'      => 'cabeleireiro',
+            'nome'      => 'Cabeleireiro',
+            'descricao' => 'Cortes, coloração e tratamentos capilares.',
+            'cor_fundo' => '#ECE7F6',
+            'cor_menu'  => '#6B2F5C',
+            'cor_botao' => '#D6336C',
+            'cor_sec'   => '#6B2F5C',
+        ],
+        'barbearia' => [
+            'slug'      => 'barbearia',
+            'nome'      => 'Barbearia',
+            'descricao' => 'Cortes masculinos, barba e estética.',
+            'cor_fundo' => '#141416',
+            'cor_menu'  => '#1c1e22',
+            'cor_botao' => '#c5a059',
+            'cor_sec'   => '#94a3b8',
+        ],
+        'maquiagem' => [
+            'slug'      => 'maquiagem',
+            'nome'      => 'Maquiagem',
+            'descricao' => 'Produção visual, noivas e maquiagem social.',
+            'cor_fundo' => '#FAF5F5',
+            'cor_menu'  => '#5C1D2E',
+            'cor_botao' => '#C86D7A',
+            'cor_sec'   => '#5C1D2E',
+        ],
+        'naildesigner' => [
+            'slug'      => 'naildesigner',
+            'nome'      => 'Nail Designer',
+            'descricao' => 'Alongamentos, esmaltação e cuidados com as unhas.',
+            'cor_fundo' => '#F8F4F9',
+            'cor_menu'  => '#3E1854',
+            'cor_botao' => '#D82370',
+            'cor_sec'   => '#3E1854',
+        ]
+    ];
+}
+
+function agendaNormalizarNicho($termo) {
+    $t = mb_strtolower(trim((string)$termo), 'UTF-8');
+    if ($t === '') {
+        return 'cabeleireiro';
+    }
+    if (strpos($t, 'barb') !== false || strpos($t, 'navalha') !== false || strpos($t, 'masculin') !== false) {
+        return 'barbearia';
+    }
+    if (strpos($t, 'make') !== false || strpos($t, 'maqu') !== false) {
+        return 'maquiagem';
+    }
+    if (strpos($t, 'nail') !== false || strpos($t, 'unha') !== false || strpos($t, 'manicur') !== false || strpos($t, 'esmalt') !== false) {
+        return 'naildesigner';
+    }
+    return 'cabeleireiro';
+}
+
+function agendaObterNicho($profissionalOuTipo) {
+    if (is_array($profissionalOuTipo)) {
+        if (!empty($profissionalOuTipo['empre_nicho'])) {
+            return agendaNormalizarNicho($profissionalOuTipo['empre_nicho']);
+        }
+        if (!empty($profissionalOuTipo['empre_tipo'])) {
+            return agendaNormalizarNicho($profissionalOuTipo['empre_tipo']);
+        }
+        return 'cabeleireiro';
+    }
+    return agendaNormalizarNicho($profissionalOuTipo);
+}
+
+function agendaInfoNicho($nichoOuTipo) {
+    $slug = agendaObterNicho($nichoOuTipo);
+    $nichos = agendaListarNichos();
+    return $nichos[$slug] ?? $nichos['cabeleireiro'];
+}
+
+function agendaDeterminarTemaAtivo($conexao, $pagina = '', $idParam = 0, $ehEmpresario = false, $meuIdEmpresario = null) {
+    // 1. Se estiver visualizando o perfil de um profissional específico
+    if ($pagina === 'profissional' && $idParam > 0) {
+        $prof = agendaBuscarProfissional($conexao, $idParam);
+        if ($prof) {
+            return agendaObterNicho($prof);
+        }
+    }
+
+    // 2. Se o usuário logado for empresário (visualizando suas próprias páginas)
+    if ($ehEmpresario && $meuIdEmpresario > 0) {
+        $prof = agendaBuscarProfissional($conexao, $meuIdEmpresario);
+        if ($prof) {
+            return agendaObterNicho($prof);
+        }
+    }
+
+    // 3. Se houver filtro por nicho na URL (ex: lista de profissionais)
+    if (!empty($_GET['nicho'])) {
+        return agendaNormalizarNicho($_GET['nicho']);
+    }
+
+    // 4. Padrão
+    return 'cabeleireiro';
+}
+
 //--------------------EMPRESÁRIO-----------------------//
 // ⡤⠒⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡤⠒⢤
 //⢣⡀⠀⠉⠲⢤⣀⡀⠀⠀⠀⠀⠀⠀⢀⣀⡤⠖⠉⠀⢀⡜
@@ -318,9 +423,43 @@ function editarempresario($conexao, $empre_tipo, $empre_dias_trab, $cidade, $ide
 };
 
 
-function salvarempresario($conexao, $usuarios_idusuarios, $empre_tipo, $dias_trab, $cidade) {
-    $sql = "INSERT INTO empresario (usuarios_idusuarios, empre_tipo, empre_dias_trab, empre_cidade) VALUES (?, ?, ?, ?)";
-    $comando = mysqli_prepare($conexao, $sql);
+function salvarempresario($conexao, $usuarios_idusuarios, $empre_tipo, $cidade, $dias_trab = 'A definir', $empre_nicho = null) {
+    // Compatibilidade caso parâmetros sejam passados na ordem antiga: ($conexao, $id, $tipo, $dias_trab, $cidade)
+    if (func_num_args() >= 5 && is_string($dias_trab) && !empty($dias_trab) && $dias_trab !== 'A definir' && $cidade === 'A definir') {
+        $cidadeReal = func_get_arg(4);
+        $diasReal = $cidade ?: 'A definir';
+        $cidade = $cidadeReal;
+        $dias_trab = $diasReal;
+    }
+
+    if (empty($dias_trab)) {
+        $dias_trab = 'A definir';
+    }
+
+    if ($empre_nicho === null) {
+        $empre_nicho = agendaNormalizarNicho($empre_tipo);
+    } else {
+        $empre_nicho = agendaNormalizarNicho($empre_nicho);
+    }
+
+    // 1. Tenta salvar na tabela incluindo empre_nicho
+    $sqlComNicho = "INSERT INTO empresario (usuarios_idusuarios, empre_tipo, empre_nicho, empre_dias_trab, empre_cidade) VALUES (?, ?, ?, ?, ?)";
+    $comando = @mysqli_prepare($conexao, $sqlComNicho);
+    if ($comando) {
+        mysqli_stmt_bind_param($comando, 'issss', $usuarios_idusuarios, $empre_tipo, $empre_nicho, $dias_trab, $cidade);
+        $funcionou = @mysqli_stmt_execute($comando);
+        mysqli_stmt_close($comando);
+        if ($funcionou) {
+            return true;
+        }
+    }
+
+    // 2. Fallback caso a tabela ainda não contenha a coluna empre_nicho
+    $sqlSemNicho = "INSERT INTO empresario (usuarios_idusuarios, empre_tipo, empre_dias_trab, empre_cidade) VALUES (?, ?, ?, ?)";
+    $comando = mysqli_prepare($conexao, $sqlSemNicho);
+    if (!$comando) {
+        return false;
+    }
     mysqli_stmt_bind_param($comando, 'isss', $usuarios_idusuarios, $empre_tipo, $dias_trab, $cidade);
     $funcionou = mysqli_stmt_execute($comando);
     mysqli_stmt_close($comando);
@@ -440,10 +579,11 @@ function agendaCodigoDia($data) {
 
 // ---------- profissionais e serviços ----------
 
-// $cidade vazio = todos. Com texto: busca parcial, sem diferenciar maiúsculas/acentos ("goiania" acha "Goiânia").
-function agendaListarProfissionais($conexao, $cidade = '') {
+// $cidade vazio = todos. $nicho vazio = todos os ramos.
+function agendaListarProfissionais($conexao, $cidade = '', $nicho = '') {
     $cidade = trim((string)$cidade);
-    $sql = "SELECT e.idempresario, e.empre_tipo, e.empre_cidade, u.user_nome, u.user_fotos
+    $nicho = trim((string)$nicho);
+    $sql = "SELECT e.*, u.user_nome, u.user_fotos
             FROM empresario e
             JOIN usuarios u ON u.idusuarios = e.usuarios_idusuarios";
     if ($cidade !== '') {
@@ -453,13 +593,19 @@ function agendaListarProfissionais($conexao, $cidade = '') {
 
     $comando = mysqli_prepare($conexao, $sql);
     if ($cidade !== '') {
-        $padrao = '%' . addcslashes($cidade, '%_\\') . '%'; // % e _ digitados valem como texto comum
+        $padrao = '%' . addcslashes($cidade, '%_\\') . '%';
         mysqli_stmt_bind_param($comando, 's', $padrao);
     }
     mysqli_stmt_execute($comando);
     $resultado = mysqli_stmt_get_result($comando);
     $lista = [];
     while ($linha = mysqli_fetch_assoc($resultado)) {
+        if ($nicho !== '') {
+            $nichoEsperado = agendaNormalizarNicho($nicho);
+            if (agendaObterNicho($linha) !== $nichoEsperado) {
+                continue;
+            }
+        }
         $lista[] = $linha;
     }
     mysqli_stmt_close($comando);
@@ -480,7 +626,7 @@ function agendaListarCidades($conexao) {
 }
 
 function agendaBuscarProfissional($conexao, $idempresario) {
-    $sql = "SELECT e.idempresario, e.empre_tipo, e.empre_cidade, u.user_nome, u.user_fotos
+    $sql = "SELECT e.*, u.user_nome, u.user_fotos
             FROM empresario e
             JOIN usuarios u ON u.idusuarios = e.usuarios_idusuarios
             WHERE e.idempresario = ?";

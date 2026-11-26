@@ -36,7 +36,7 @@
         <label class="login_label">Senha:</label>
         <input type="password" name="senha" required id="senha" class="login_input">
 
-        <button type="button" class="login_button_password" onclick="const i=document.getElementById('senha'); i.type = i.type === 'password' ? 'text' : 'password';">👁</button>
+        <button type="button" class="login_button_password" onclick="const i=document.getElementById('senha'); i.type = i.type === 'password' ? 'text' : 'password'; this.textContent = i.type === 'password' ? 'Ver' : 'Ocultar';">Ver</button>
 
 
         <button type="submit" name="enviar" class="login_button">Login</button>

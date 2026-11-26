@@ -54,7 +54,7 @@ $servicos = agendaServicosDoProfissional($conexao, $meuIdEmpresario);
 
     <div class="campo_painel">
         <label for="serv_nome">Nome do serviço</label>
-        <input type="text" id="serv_nome" name="nome" maxlength="100" required placeholder="Ex.: Corte feminino" value="<?= htmlspecialchars($valores['nome']) ?>">
+        <input type="text" id="serv_nome" name="nome" maxlength="100" required placeholder="Ex.: Corte, Barba, Make Social, Alongamento em Gel" value="<?= htmlspecialchars($valores['nome']) ?>">
     </div>
 
     <div class="campo_painel">
@@ -109,7 +109,9 @@ $servicos = agendaServicosDoProfissional($conexao, $meuIdEmpresario);
                 <?php if (!empty($s['serv_fotos'])): ?>
                     <img class="foto_servico_painel" src="../uploads/servicos/<?= htmlspecialchars($s['serv_fotos']) ?>" alt="">
                 <?php else: ?>
-                    <div class="foto_servico_painel foto_vazia_painel" aria-hidden="true">✂</div>
+                    <div class="foto_servico_painel foto_vazia_painel" aria-hidden="true">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.45;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    </div>
                 <?php endif; ?>
 
                 <div class="texto_servico_painel">

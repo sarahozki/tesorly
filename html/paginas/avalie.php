@@ -81,11 +81,11 @@ $stats = obterEstatisticasComentarios($conexao);
 $comentarios = listarcomentarios($conexao);
 
 $rotulosEstrelas = [
-    5 => '5 estrelas — Excelente! 😍',
-    4 => '4 estrelas — Muito bom! 😊',
-    3 => '3 estrelas — Bom 🙂',
-    2 => '2 estrelas — Regular 😐',
-    1 => '1 estrela — Ruim 🙁',
+    5 => 'Excelente',
+    4 => 'Muito bom',
+    3 => 'Bom',
+    2 => 'Regular',
+    1 => 'Ruim',
 ];
 ?>
 
@@ -113,10 +113,11 @@ $rotulosEstrelas = [
 
 /* Card de estatísticas */
 .card_stats_avalie {
-    background: #ffffff;
+    background: var(--cor-card, #ffffff);
+    border: 1px solid var(--cor-borda-card, transparent);
     border-radius: 16px;
     padding: 24px;
-    box-shadow: 0 6px 18px rgba(74, 45, 92, 0.1);
+    box-shadow: var(--sombra-card, 0 6px 18px rgba(74, 45, 92, 0.1));
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -128,13 +129,13 @@ $rotulosEstrelas = [
     gap: 18px;
     margin-bottom: 18px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #ECE7F6;
+    border-bottom: 1px solid var(--cor-bg, #ECE7F6);
 }
 
 .stats_score_grande {
     font-size: 3.4rem;
     font-weight: 800;
-    color: #6B2F5C;
+    color: var(--cor-destaque, #6B2F5C);
     line-height: 1;
 }
 
@@ -210,7 +211,7 @@ $rotulosEstrelas = [
 
 .barra_estrela_fill {
     height: 100%;
-    background: linear-gradient(90deg, #F5B82A 0%, #D6336C 100%);
+    background: #F5B82A;
     border-radius: 999px;
     transition: width 0.4s ease;
 }
@@ -240,7 +241,7 @@ $rotulosEstrelas = [
 .grafico_titulo {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #6B2F5C;
+    color: var(--cor-subtitulo, #6B2F5C);
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
@@ -251,9 +252,9 @@ $rotulosEstrelas = [
 }
 
 .btn_tab_grafico {
-    background: #ECE7F6;
+    background: var(--cor-bg, #ECE7F6);
     border: none;
-    color: #6B2F5C;
+    color: var(--cor-subtitulo, #6B2F5C);
     font-size: 0.75rem;
     font-weight: 600;
     padding: 5px 12px;
@@ -264,8 +265,8 @@ $rotulosEstrelas = [
 
 .btn_tab_grafico.ativo,
 .btn_tab_grafico:hover {
-    background: #6B2F5C;
-    color: #ffffff;
+    background: var(--cor-destaque, #6B2F5C);
+    color: var(--cor-destaque-texto, #ffffff);
 }
 
 .canvas_chart_wrap {
@@ -276,7 +277,8 @@ $rotulosEstrelas = [
 
 /* Card do formulário */
 .card_form_avalie {
-    background: #ffffff;
+    background: var(--cor-card, #ffffff);
+    border: 1px solid var(--cor-borda-card, transparent);
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 6px 18px rgba(74, 45, 92, 0.1);
@@ -384,9 +386,9 @@ $rotulosEstrelas = [
     align-items: flex-start;
     padding: 22px;
     border-radius: 16px;
-    background: #FFFFFF;
-    border: 1px solid #ECE7F6;
-    box-shadow: 0 4px 16px rgba(74, 45, 92, 0.08);
+    background: var(--cor-card, #FFFFFF);
+    border: 1px solid var(--cor-borda-card, #ECE7F6);
+    box-shadow: var(--sombra-card, 0 4px 16px rgba(74, 45, 92, 0.08));
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -405,9 +407,9 @@ $rotulosEstrelas = [
     height: 58px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #6B2F5C;
-    box-shadow: 0 4px 12px rgba(107, 47, 92, 0.18);
-    background: #ECE7F6;
+    border: 3px solid var(--cor-destaque, #6B2F5C);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    background: var(--cor-bg, #ECE7F6);
     display: block;
 }
 
@@ -436,14 +438,14 @@ $rotulosEstrelas = [
 
 .autor_comentario {
     font-weight: 700;
-    color: #2E2340;
+    color: var(--cor-card-titulo, #2E2340);
     font-size: 1.05rem;
 }
 
 .badge_meu_comentario {
-    background: #FDEDF3;
-    color: #D6336C;
-    border: 1px solid #F5C6CB;
+    background: var(--cor-badge-bg, #FDEDF3);
+    color: var(--cor-destaque, #D6336C);
+    border: 1px solid var(--cor-borda-card, #F5C6CB);
     font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -467,21 +469,21 @@ $rotulosEstrelas = [
     display: inline-flex;
     align-items: center;
     gap: 3px;
-    background: #FAF7FD;
-    border: 1px solid #E2D9EE;
+    background: var(--cor-bg, #FAF7FD);
+    border: 1px solid var(--cor-input-borda, #E2D9EE);
     border-radius: 999px;
     padding: 4px 10px;
 }
 
 .texto_comentario {
-    color: #374151;
+    color: var(--cor-card-texto, #374151);
     font-size: 0.95rem;
     line-height: 1.6;
     word-break: break-word;
-    background: #FDFBFF;
+    background: var(--cor-input-bg, #FDFBFF);
     padding: 10px 14px;
     border-radius: 10px;
-    border-left: 3px solid #6B2F5C;
+    border-left: 3px solid var(--cor-destaque, #6B2F5C);
 }
 
 .rodape_comentario {
@@ -574,7 +576,7 @@ $rotulosEstrelas = [
         <!-- Gráfico interativo Chart.js -->
         <div class="grafico_container_avalie">
             <div class="grafico_header_tabs">
-                <span class="grafico_titulo">📊 Pessoas por nota</span>
+                <span class="grafico_titulo">Distribuição de notas</span>
                 <div class="grafico_abas_btn">
                     <button type="button" class="btn_tab_grafico ativo" id="btn_modo_barras">Barras</button>
                     <button type="button" class="btn_tab_grafico" id="btn_modo_pizza">Pizza</button>
@@ -675,7 +677,7 @@ $rotulosEstrelas = [
                     <div class="topo_comentario">
                         <div class="autor_comentario_box">
                             <span class="autor_comentario"><?= htmlspecialchars($nomeAutor) ?></span>
-                            <span class="badge_verificado">✓ Verificado</span>
+                            <span class="badge_verificado">Verificado</span>
                             <?php if ($ehMeu): ?>
                                 <span class="badge_meu_comentario">Você</span>
                             <?php endif; ?>
@@ -700,7 +702,7 @@ $rotulosEstrelas = [
                                 <input type="hidden" name="acao" value="excluir">
                                 <input type="hidden" name="idcomentarios" value="<?= (int)$c['idcomentarios'] ?>">
                                 <button type="submit" class="btn_deletar_comentario">
-                                    🗑 Excluir minha avaliação
+                                    Excluir avaliação
                                 </button>
                             </form>
                         </div>
@@ -733,11 +735,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputEstrela = document.getElementById('comentarios_estrela_input');
     const legenda = document.getElementById('legenda_estrela');
     const rotulos = {
-        5: '5 estrelas — Excelente! 😍',
-        4: '4 estrelas — Muito bom! 😊',
-        3: '3 estrelas — Bom 🙂',
-        2: '2 estrelas — Regular 😐',
-        1: '1 estrela — Ruim 🙁'
+        5: 'Excelente',
+        4: 'Muito bom',
+        3: 'Bom',
+        2: 'Regular',
+        1: 'Ruim'
     };
 
     if (pillContainer && inputEstrela) {
@@ -822,7 +824,8 @@ document.addEventListener('DOMContentLoaded', function () {
             dadosAvaliacoes[1]
         ];
 
-        const coresGradiente = ['#F5B82A', '#E89E1E', '#E67E22', '#D6336C', '#6B2F5C'];
+        const coresBarras = ['#F5B82A', '#F5B82A', '#F5B82A', '#F5B82A', '#F5B82A'];
+        const coresPizza = ['#F5B82A', '#E2A01C', '#CE8913', '#BA730B', '#A65E05'];
 
         let tipoAtual = 'bar';
         let chartInstance = null;
@@ -842,10 +845,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         datasets: [{
                             label: 'Pessoas',
                             data: valores,
-                            backgroundColor: coresGradiente,
-                            borderRadius: 6,
+                            backgroundColor: coresBarras,
+                            borderRadius: 4,
                             borderSkipped: false,
-                            barThickness: 15
+                            barThickness: 14
                         }]
                     },
                     options: {
@@ -894,7 +897,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         labels: labels,
                         datasets: [{
                             data: valores,
-                            backgroundColor: coresGradiente,
+                            backgroundColor: coresPizza,
                             borderWidth: 2,
                             borderColor: '#FFFFFF'
                         }]

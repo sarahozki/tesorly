@@ -1,22 +1,24 @@
 /* ===== Agenda / agendamento (profissionais, perfil do profissional, lista) ===== */
 
-.titulo_pagina_agenda { color: #2E2340; margin-bottom: 16px; }
-.subtitulo_agenda { color: #6B2F5C; margin: 24px 0 10px; }
-.aviso_agenda { color: #6b6280; font-size: 0.9rem; }
-.aviso_agenda a { color: #D6336C; }
-.sub_agenda { color: #777; font-size: 0.82rem; }
+.titulo_pagina_agenda { color: var(--cor-titulo, #2E2340); margin-bottom: 16px; }
+.subtitulo_agenda { color: var(--cor-subtitulo, #6B2F5C); margin: 24px 0 10px; }
+.aviso_agenda { color: var(--cor-aviso, #6b6280); font-size: 0.9rem; }
+.aviso_agenda a { color: var(--cor-destaque, #D6336C); }
+.sub_agenda { color: var(--cor-aviso, #777); font-size: 0.82rem; }
 
 .card_agenda {
-    background: #fff;
+    background: var(--cor-card, #fff);
     border-radius: 14px;
-    box-shadow: 0 6px 16px rgba(74, 45, 92, 0.12);
+    box-shadow: var(--sombra-card, 0 6px 16px rgba(74, 45, 92, 0.12));
+    border: 1px solid var(--cor-borda-card, transparent);
+    color: var(--cor-card-texto, #2E2340);
     padding: 20px;
 }
 
 .botao_agenda {
     display: inline-block;
-    background: #D6336C;
-    color: #fff;
+    background: var(--cor-botao, #D6336C);
+    color: var(--cor-botao-texto, #fff);
     border: none;
     border-radius: 8px;
     padding: 10px 18px;
@@ -24,37 +26,38 @@
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
 }
-.botao_agenda:hover { background: #B82A5B; }
+.botao_agenda:hover { background: var(--cor-botao-hover, #B82A5B); transform: translateY(-1px); }
 .botao_agenda:disabled { opacity: 0.45; cursor: not-allowed; }
-.botao_sec_agenda { background: transparent; color: #6B2F5C; border: 1px solid #6B2F5C; }
-.botao_sec_agenda:hover { background: #F4E9F2; }
+.botao_sec_agenda { background: var(--cor-botao-sec-bg, transparent); color: var(--cor-botao-sec-texto, #6B2F5C); border: 1px solid var(--cor-botao-sec-borda, #6B2F5C); }
+.botao_sec_agenda:hover { background: var(--cor-botao-sec-hover, #F4E9F2); }
 
 /* ---------- lista de profissionais ---------- */
 .grid_prof_agenda { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .card_prof_agenda { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.card_prof_agenda h3 { color: #2E2340; }
+.card_prof_agenda h3 { color: var(--cor-card-titulo, #2E2340); }
 .card_prof_agenda .botao_agenda { margin-top: 10px; }
-.foto_prof_agenda { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid #ECE7F6; }
+.foto_prof_agenda { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid var(--cor-bg, #ECE7F6); }
 
 /* ---------- perfil do profissional ---------- */
 .perfil_agenda { display: flex; flex-direction: column; gap: 20px; }
 .cabecalho_prof_agenda { display: flex; align-items: center; gap: 16px; }
-.cabecalho_prof_agenda h2 { color: #2E2340; }
-.link_voltar_agenda { margin-left: auto; color: #6B2F5C; font-size: 0.85rem; text-decoration: none; }
+.cabecalho_prof_agenda h2 { color: var(--cor-card-titulo, #2E2340); }
+.link_voltar_agenda { margin-left: auto; color: var(--cor-subtitulo, #6B2F5C); font-size: 0.85rem; text-decoration: none; }
 .link_voltar_agenda:hover { text-decoration: underline; }
 
-.titulo_agenda { color: #2E2340; margin-bottom: 14px; }
-.rotulo_agenda { display: block; color: #6B2F5C; font-weight: 600; font-size: 0.85rem; margin: 18px 0 8px; }
-.legenda_agenda { color: #999; font-weight: 400; font-size: 0.75rem; margin-left: 6px; }
+.titulo_agenda { color: var(--cor-titulo, #2E2340); margin-bottom: 14px; }
+.rotulo_agenda { display: block; color: var(--cor-subtitulo, #6B2F5C); font-weight: 600; font-size: 0.85rem; margin: 18px 0 8px; }
+.legenda_agenda { color: var(--cor-aviso, #999); font-weight: 400; font-size: 0.75rem; margin-left: 6px; }
 
 .select_agenda {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #cfc4de;
+    border: 1px solid var(--cor-input-borda, #cfc4de);
     border-radius: 8px;
-    background: #fff;
-    color: #2E2340;
+    background: var(--cor-input-bg, #fff);
+    color: var(--cor-input-texto, #2E2340);
     font-size: 0.9rem;
 }
 
@@ -64,10 +67,10 @@
     flex: 0 0 auto;
     width: 58px;
     padding: 8px 0;
-    border: 1px solid #6B2F5C;
+    border: 1px solid var(--cor-dia-borda, #6B2F5C);
     border-radius: 10px;
-    background: #fff;
-    color: #6B2F5C;
+    background: var(--cor-card, #fff);
+    color: var(--cor-dia-texto, #6B2F5C);
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -75,10 +78,15 @@
     line-height: 1.25;
     font-size: 0.7rem;
     text-transform: uppercase;
+    transition: all 0.2s ease;
 }
 .dia_btn_agenda strong { font-size: 1.1rem; }
-.dia_btn_agenda:hover:not(:disabled) { background: #F4E9F2; }
-.dia_btn_agenda.selecionado { background: #6B2F5C; color: #fff; }
+.dia_btn_agenda:hover:not(:disabled) { background: var(--cor-dia-hover, #F4E9F2); }
+.dia_btn_agenda.selecionado {
+    background: var(--cor-destaque, #D6336C);
+    color: var(--cor-destaque-texto, #fff);
+    border-color: var(--cor-destaque, #D6336C);
+}
 .dia_btn_agenda:disabled { border-color: #ddd5e8; background: #F3F0F8; color: #aaa; cursor: not-allowed; }
 
 /* horários */
@@ -86,18 +94,28 @@
 .horarios_agenda .aviso_agenda { grid-column: 1 / -1; }
 .chip_horario_agenda {
     padding: 9px 0;
-    border: 1px solid #6B2F5C;
+    border: 1px solid var(--cor-dia-borda, #6B2F5C);
     border-radius: 8px;
-    background: #fff;
-    color: #6B2F5C;
+    background: var(--cor-card, #fff);
+    color: var(--cor-dia-texto, #6B2F5C);
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
-.chip_horario_agenda:hover:not(:disabled) { background: #F4E9F2; }
-.chip_horario_agenda.selecionado { background: #D6336C; border-color: #D6336C; color: #fff; }
+.chip_horario_agenda:hover:not(:disabled) { background: var(--cor-dia-hover, #F4E9F2); }
+.chip_horario_agenda.selecionado {
+    background: var(--cor-destaque, #D6336C);
+    border-color: var(--cor-destaque, #D6336C);
+    color: var(--cor-destaque-texto, #fff);
+}
 .chip_horario_agenda:disabled {
     background: #E6E0EE;
+    border-color: #E6E0EE;
+    color: #9A8FAB;
+    text-decoration: line-through;
+    cursor: not-allowed;
+}
     border-color: #E6E0EE;
     color: #9A8FAB;
     text-decoration: line-through;
@@ -230,23 +248,24 @@
 .tabela_horarios_painel { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
 .tabela_horarios_painel th {
     text-align: left;
-    color: #6B2F5C;
+    color: var(--cor-subtitulo, #6B2F5C);
     font-size: 0.78rem;
     padding: 8px 10px;
-    border-bottom: 2px solid #ECE7F6;
+    border-bottom: 2px solid var(--cor-bg, #ECE7F6);
 }
-.tabela_horarios_painel td { padding: 8px 10px; border-bottom: 1px solid #F1ECF7; white-space: nowrap; }
-.tabela_horarios_painel input[type="checkbox"] { width: 18px; height: 18px; accent-color: #D6336C; cursor: pointer; }
+.tabela_horarios_painel td { padding: 8px 10px; border-bottom: 1px solid var(--cor-bg, #F1ECF7); white-space: nowrap; color: var(--cor-card-texto, #2E2340); }
+.tabela_horarios_painel input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--cor-destaque, #D6336C); cursor: pointer; }
 .tabela_horarios_painel input[type="time"] {
     padding: 6px 8px;
-    border: 1px solid #cfc4de;
+    border: 1px solid var(--cor-input-borda, #cfc4de);
     border-radius: 8px;
     font-family: inherit;
-    color: #2E2340;
+    background: var(--cor-input-bg, #fff);
+    color: var(--cor-input-texto, #2E2340);
 }
-.tabela_horarios_painel input[type="time"]:disabled { background: #F3F0F8; color: #aaa; }
-.turno_painel span { margin: 0 6px; color: #8a8099; }
-.tabela_horarios_painel tr.inativo_painel td strong { color: #9a90ab; font-weight: 500; }
+.tabela_horarios_painel input[type="time"]:disabled { background: var(--cor-bg, #F3F0F8); color: #aaa; }
+.turno_painel span { margin: 0 6px; color: var(--cor-aviso, #8a8099); }
+.tabela_horarios_painel tr.inativo_painel td strong { color: var(--cor-aviso, #9a90ab); font-weight: 500; }
 
 @media (max-width: 560px) {
     .linha_campos_painel { grid-template-columns: 1fr; }
@@ -364,7 +383,7 @@
 }
 .barra_estrela_fill {
     height: 100%;
-    background: linear-gradient(90deg, #F5A623, #D6336C);
+    background: #F5A623;
     border-radius: 999px;
     transition: width 0.3s ease;
 }
@@ -657,6 +676,281 @@
 }
 .btn_deletar_comentario:hover {
     background: #F9DADA;
+}
+
+/* =========================================================
+   NICHOS & TABS DE CATEGORIAS
+   ========================================================= */
+
+.tabs_nichos_agenda {
+    display: inline-flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding: 3px;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    max-width: 100%;
+}
+
+.tab_nicho_btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--cor-aviso, #64748B);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.tab_nicho_btn:hover {
+    color: var(--cor-card-titulo, #1E1A29);
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.tab_nicho_btn.ativo {
+    background: var(--cor-card, #FFFFFF);
+    color: var(--cor-card-titulo, #1E1A29);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Badges de nicho nos cards */
+.card_prof_topo {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: -4px;
+}
+
+.badge_nicho_card {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid transparent;
+}
+
+.badge_nicho_cabeleireiro {
+    background: #F3EEF8;
+    color: #6B2F5C;
+    border-color: #E6DAF0;
+}
+
+.badge_nicho_barbearia {
+    background: #1C1E22;
+    color: #C5A059;
+    border-color: #333640;
+}
+
+.badge_nicho_maquiagem {
+    background: #FBF0F2;
+    color: #5C1D2E;
+    border-color: #EED2D7;
+}
+
+.badge_nicho_naildesigner {
+    background: #F9F0FA;
+    color: #3E1854;
+    border-color: #E7D2EA;
+}
+
+/* =========================================================
+   OVERRIDE ESPECÍFICO: TEMA BARBEARIA (PRETO, DOURADO & PRATA)
+   ========================================================= */
+
+body.tema-barbearia .filtro_prof_agenda {
+    background: #252830;
+    border: 1px solid #383C48;
+}
+
+body.tema-barbearia .campo_filtro_agenda label {
+    color: #D4AF37;
+}
+
+body.tema-barbearia .campo_filtro_agenda input[type="search"] {
+    background: #1A1C20;
+    color: #F4F5F7;
+    border: 1px solid #383C48;
+}
+
+body.tema-barbearia .campo_filtro_agenda input[type="search"]:focus {
+    border-color: #D4AF37;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+body.tema-barbearia .item_agenda {
+    background: #252830;
+    border: 1px solid #383C48;
+}
+
+body.tema-barbearia .item_agenda strong {
+    color: #F4F5F7;
+}
+
+body.tema-barbearia .item_agenda p {
+    color: #C5CCD6;
+}
+
+body.tema-barbearia .status_pendente {
+    background: rgba(212, 175, 55, 0.2);
+    color: #D4AF37;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+body.tema-barbearia .status_confirmado {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ECC71;
+    border: 1px solid rgba(46, 204, 113, 0.4);
+}
+
+body.tema-barbearia .status_cancelado {
+    background: rgba(231, 76, 60, 0.2);
+    color: #E74C3C;
+    border: 1px solid rgba(231, 76, 60, 0.4);
+}
+
+body.tema-barbearia .status_concluido {
+    background: rgba(168, 178, 193, 0.2);
+    color: #C5CCD6;
+    border: 1px solid rgba(168, 178, 193, 0.4);
+}
+
+body.tema-barbearia .card_dado_item {
+    background: #252830;
+    border: 1px solid #383C48;
+}
+
+body.tema-barbearia .icone_dado_box {
+    background: #1A1C20;
+    color: #D4AF37;
+    border: 1px solid #383C48;
+}
+
+body.tema-barbearia .label_dado {
+    color: #A8B2C1;
+}
+
+body.tema-barbearia .valor_dado {
+    color: #F4F5F7;
+}
+
+body.tema-barbearia .tabs_nichos_agenda {
+    background: #141416;
+    border-color: #282B32;
+}
+
+body.tema-barbearia .tab_nicho_btn {
+    color: #94A3B8;
+}
+
+body.tema-barbearia .tab_nicho_btn:hover {
+    color: #F1F5F9;
+    background: #1C1E22;
+}
+
+body.tema-barbearia .tab_nicho_btn.ativo {
+    background: #202227;
+    color: #C5A059;
+    border: 1px solid #333640;
+    box-shadow: none;
+}
+
+body.tema-barbearia .perfil_hero {
+    background: #202227;
+    border: 1px solid #282B32;
+}
+
+body.tema-barbearia .perfil_nome_hero {
+    color: #F4F5F7;
+}
+
+body.tema-barbearia .perfil_badge_tipo {
+    background: #141416;
+    color: #C5A059;
+    border: 1px solid #333640;
+}
+
+body.tema-barbearia .card_comentario_recente {
+    background: #202227;
+    border: 1px solid #282B32;
+}
+
+body.tema-barbearia .autor_comentario {
+    color: #F4F5F7;
+}
+
+body.tema-barbearia .texto_comentario {
+    color: #C5CCD6;
+}
+
+body.tema-barbearia .badge_meu_comentario {
+    background: #1A1C20;
+    color: #D4AF37;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+body.tema-barbearia .passos_painel {
+    background: #1F2229;
+    color: #D4AF37;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+body.tema-barbearia .passos_painel a {
+    color: #D4AF37;
+}
+
+body.tema-barbearia .subtitulo_painel {
+    color: #F4F5F7;
+}
+
+body.tema-barbearia .campo_painel label {
+    color: #D4AF37;
+}
+
+body.tema-barbearia .campo_painel input,
+body.tema-barbearia .campo_painel select,
+body.tema-barbearia .campo_painel textarea {
+    background: #1A1C20;
+    color: #F4F5F7;
+    border: 1px solid #383C48;
+}
+
+body.tema-barbearia .dia_btn_agenda:disabled {
+    border-color: #2F333D;
+    background: #1A1C20;
+    color: #555A66;
+}
+
+body.tema-barbearia .chip_horario_agenda:disabled {
+    border-color: #2F333D;
+    background: #1A1C20;
+    color: #555A66;
+}
+
+body.tema-barbearia .card_avaliacao_box {
+    background: #252830;
+    border: 1px solid #383C48;
+}
+
+body.tema-barbearia .textarea_comentario {
+    background: #1A1C20;
+    color: #F4F5F7;
+    border-color: #383C48;
+}
+
+body.tema-barbearia .estrelas_capsule {
+    background: #1A1C20;
+    border: 1px solid #383C48;
 }
 
 

@@ -27,8 +27,185 @@ li {
     font-family: 'Brush Script MT', cursive;
 }
 
+/* =========================================================
+   TEMA MULTI-NICHO (CABELEIREIRO, BARBEARIA, MAQUIAGEM, NAILDESIGNER)
+   ========================================================= */
+
+:root,
+body.tema-cabeleireiro {
+    --cor-bg: #ECE7F6;
+    --cor-logo: #FFFFFF;
+    --cor-sidebar: #6B2F5C;
+    --cor-sidebar-borda: transparent;
+    --cor-nav-link: #F1E9F5;
+    --cor-nav-hover: rgba(255, 255, 255, 0.08);
+    --cor-destaque: #D6336C;
+    --cor-destaque-hover: #BF255C;
+    --cor-destaque-texto: #FFFFFF;
+    --cor-logout: #F08A9C;
+    --cor-catalogo: #ECE7F6;
+    --cor-card: #FFFFFF;
+    --cor-card-titulo: #1E1A29;
+    --cor-card-texto: #2E2340;
+    --cor-card-sub: #6B2F5C;
+    --cor-titulo: #1E1A29;
+    --cor-subtitulo: #6B2F5C;
+    --cor-aviso: #64748B;
+    --cor-botao: #D6336C;
+    --cor-botao-hover: #BF255C;
+    --cor-botao-texto: #FFFFFF;
+    --cor-botao-sec-bg: transparent;
+    --cor-botao-sec-texto: #6B2F5C;
+    --cor-botao-sec-borda: #6B2F5C;
+    --cor-botao-sec-hover: #F4E9F2;
+    --cor-tag-borda: #6B2F5C;
+    --cor-tag-texto: #6B2F5C;
+    --cor-tag-bg: #F8F5FC;
+    --cor-dia-borda: #6B2F5C;
+    --cor-dia-texto: #6B2F5C;
+    --cor-dia-hover: #F4E9F2;
+    --cor-input-bg: #FFFFFF;
+    --cor-input-borda: #CBD5E1;
+    --cor-input-texto: #1E1A29;
+    --cor-borda-card: #E2E8F0;
+    --cor-badge-bg: rgba(255, 255, 255, 0.15);
+    --cor-badge-borda: rgba(255, 255, 255, 0.3);
+    --cor-badge-texto: #FFFFFF;
+    --sombra-card: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* BARBEARIA: PRETO / DOURADO / PRATA (Acabamento fosco profissional) */
+body.tema-barbearia {
+    --cor-bg: #141416;
+    --cor-logo: #C5A059;
+    --cor-sidebar: #1C1E22;
+    --cor-sidebar-borda: 1px solid #282B32;
+    --cor-nav-link: #94A3B8;
+    --cor-nav-hover: #262930;
+    --cor-destaque: #C5A059;
+    --cor-destaque-hover: #B38E46;
+    --cor-destaque-texto: #141416;
+    --cor-logout: #EF4444;
+    --cor-catalogo: #18191D;
+    --cor-card: #202227;
+    --cor-card-titulo: #F1F5F9;
+    --cor-card-texto: #CBD5E1;
+    --cor-card-sub: #C5A059;
+    --cor-titulo: #F1F5F9;
+    --cor-subtitulo: #C5A059;
+    --cor-aviso: #94A3B8;
+    --cor-botao: #C5A059;
+    --cor-botao-hover: #B38E46;
+    --cor-botao-texto: #141416;
+    --cor-botao-sec-bg: transparent;
+    --cor-botao-sec-texto: #CBD5E1;
+    --cor-botao-sec-borda: #475569;
+    --cor-botao-sec-hover: #262930;
+    --cor-tag-borda: #C5A059;
+    --cor-tag-texto: #C5A059;
+    --cor-tag-bg: #202227;
+    --cor-dia-borda: #334155;
+    --cor-dia-texto: #E2E8F0;
+    --cor-dia-hover: #262930;
+    --cor-input-bg: #141416;
+    --cor-input-borda: #334155;
+    --cor-input-texto: #F1F5F9;
+    --cor-borda-card: #282B32;
+    --cor-badge-bg: #202227;
+    --cor-badge-borda: #334155;
+    --cor-badge-texto: #C5A059;
+    --sombra-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* SALÃO DE MAQUIAGEM: MARSALA / ROSE GOLD */
+body.tema-maquiagem {
+    --cor-bg: #FAF5F5;
+    --cor-logo: #FFFFFF;
+    --cor-sidebar: #5C1D2E;
+    --cor-sidebar-borda: transparent;
+    --cor-nav-link: #FDECEF;
+    --cor-nav-hover: rgba(255, 255, 255, 0.08);
+    --cor-destaque: #C86D7A;
+    --cor-destaque-hover: #B65B68;
+    --cor-destaque-texto: #FFFFFF;
+    --cor-logout: #F39EA8;
+    --cor-catalogo: #FAF5F5;
+    --cor-card: #FFFFFF;
+    --cor-card-titulo: #2B1117;
+    --cor-card-texto: #3E1E25;
+    --cor-card-sub: #5C1D2E;
+    --cor-titulo: #2B1117;
+    --cor-subtitulo: #5C1D2E;
+    --cor-aviso: #64748B;
+    --cor-botao: #C86D7A;
+    --cor-botao-hover: #B65B68;
+    --cor-botao-texto: #FFFFFF;
+    --cor-botao-sec-bg: transparent;
+    --cor-botao-sec-texto: #5C1D2E;
+    --cor-botao-sec-borda: #5C1D2E;
+    --cor-botao-sec-hover: #F8DFE3;
+    --cor-tag-borda: #5C1D2E;
+    --cor-tag-texto: #5C1D2E;
+    --cor-tag-bg: #FAF0F2;
+    --cor-dia-borda: #5C1D2E;
+    --cor-dia-texto: #5C1D2E;
+    --cor-dia-hover: #F8DFE3;
+    --cor-input-bg: #FFFFFF;
+    --cor-input-borda: #CBD5E1;
+    --cor-input-texto: #2B1117;
+    --cor-borda-card: #E2E8F0;
+    --cor-badge-bg: rgba(255, 255, 255, 0.15);
+    --cor-badge-borda: rgba(255, 255, 255, 0.3);
+    --cor-badge-texto: #FFFFFF;
+    --sombra-card: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* NAIL DESIGNER: AMETISTA / PINK */
+body.tema-naildesigner {
+    --cor-bg: #F8F4F9;
+    --cor-logo: #FFFFFF;
+    --cor-sidebar: #3E1854;
+    --cor-sidebar-borda: transparent;
+    --cor-nav-link: #F8EDFB;
+    --cor-nav-hover: rgba(255, 255, 255, 0.08);
+    --cor-destaque: #D82370;
+    --cor-destaque-hover: #BD185E;
+    --cor-destaque-texto: #FFFFFF;
+    --cor-logout: #F38CB5;
+    --cor-catalogo: #F8F4F9;
+    --cor-card: #FFFFFF;
+    --cor-card-titulo: #1F0B2B;
+    --cor-card-texto: #2D143D;
+    --cor-card-sub: #3E1854;
+    --cor-titulo: #1F0B2B;
+    --cor-subtitulo: #3E1854;
+    --cor-aviso: #64748B;
+    --cor-botao: #D82370;
+    --cor-botao-hover: #BD185E;
+    --cor-botao-texto: #FFFFFF;
+    --cor-botao-sec-bg: transparent;
+    --cor-botao-sec-texto: #3E1854;
+    --cor-botao-sec-borda: #3E1854;
+    --cor-botao-sec-hover: #F5DCF3;
+    --cor-tag-borda: #3E1854;
+    --cor-tag-texto: #3E1854;
+    --cor-tag-bg: #FAF2FA;
+    --cor-dia-borda: #3E1854;
+    --cor-dia-texto: #3E1854;
+    --cor-dia-hover: #F5DCF3;
+    --cor-input-bg: #FFFFFF;
+    --cor-input-borda: #CBD5E1;
+    --cor-input-texto: #1F0B2B;
+    --cor-borda-card: #E2E8F0;
+    --cor-badge-bg: rgba(255, 255, 255, 0.15);
+    --cor-badge-borda: rgba(255, 255, 255, 0.3);
+    --cor-badge-texto: #FFFFFF;
+    --sombra-card: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
 body {
-    background: #ECE7F6;
+    background: var(--cor-bg, #ECE7F6);
+    color: var(--cor-card-texto, #2E2340);
 }
 
 .page_pagprod {
@@ -45,33 +222,64 @@ body {
     margin-bottom: 20px;
 }
 
+.topo_marca_box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .topo_pagprod .logo_pagprod {
     font-family: 'Brush Script MT', cursive;
-    font-size: 2.2rem;
-    color: #FFFFFF;
-    text-shadow: 0 1px 3px rgba(74, 45, 92, 0.3);
+    font-size: 2.3rem;
+    color: var(--cor-logo, #FFFFFF);
+    text-decoration: none;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.badge_nicho_topo {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border: 1px solid var(--cor-badge-borda, rgba(255, 255, 255, 0.25));
+    background: var(--cor-badge-bg, rgba(255, 255, 255, 0.12));
+    color: var(--cor-badge-texto, #FFFFFF);
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
 }
 
 .chat-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    border: none;
-    background: #2FBF6E;
-    color: #fff;
-    font-size: 1.1rem;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.chat-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* ---------- layout principal (sidebar + catálogo) ---------- */
 .conteudo_pagprod {
     display: flex;
     gap: 24px;
-    background: #6B2F5C;
+    background: var(--cor-sidebar, #6B2F5C);
+    border: var(--cor-sidebar-borda, none);
     border-radius: 20px;
     padding: 24px;
     min-height: 640px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transition: background 0.25s ease;
 }
 
 /* ---------- menu lateral ---------- */
@@ -94,7 +302,7 @@ body {
     display: block;
     padding: 10px 14px;
     border-radius: 8px;
-    color: #F1E9F5;
+    color: var(--cor-nav-link, #F1E9F5);
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;
@@ -102,19 +310,20 @@ body {
 }
 
 .sidebar_pagprod a:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--cor-nav-hover, rgba(255, 255, 255, 0.08));
 }
 
 .sidebar_pagprod a.ativo {
-    background: #D6336C;
-    color: #fff;
+    background: var(--cor-destaque, #D6336C);
+    color: var(--cor-destaque-texto, #fff);
     font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar_pagprod .logout_pagprod {
     display: block;
     padding: 10px 14px;
-    color: #F08A9C;
+    color: var(--cor-logout, #F08A9C);
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 600;
@@ -127,9 +336,10 @@ body {
 /* ---------- catálogo ---------- */
 .catalogo_pagprod {
     flex: 1;
-    background: #ECE7F6;
+    background: var(--cor-catalogo, #ECE7F6);
     border-radius: 16px;
     padding: 24px;
+    transition: background 0.25s ease;
 }
 
 .grid-servicos_pagprod {
@@ -139,12 +349,19 @@ body {
 }
 
 .card-servico_pagprod {
-    background: #fff;
+    background: var(--cor-card, #fff);
+    color: var(--cor-card-texto, #2E2340);
     border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 6px 16px rgba(74, 45, 92, 0.12);
+    box-shadow: var(--sombra-card, 0 6px 16px rgba(74, 45, 92, 0.12));
     display: flex;
     flex-direction: column;
+    border: 1px solid var(--cor-borda-card, transparent);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-servico_pagprod:hover {
+    transform: translateY(-3px);
 }
 
 .card-servico_pagprod img {
@@ -157,7 +374,13 @@ body {
     align-self: flex-start;
     margin: 10px 0 0 12px;
     padding: 3px 10px;
-    border: 1px solid #6B2F5C;
+    border: 1px solid var(--cor-tag-borda, #6B2F5C);
+    color: var(--cor-tag-texto, #6B2F5C);
+    background: var(--cor-tag-bg, #FAF5FB);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
     border-radius: 999px;
     font-size: 0.7rem;
     font-weight: 700;
